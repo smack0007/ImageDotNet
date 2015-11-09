@@ -8,8 +8,8 @@ namespace SharpImage
 {
     public enum PixelFormat
     {
-        R8G8B8,
+        RGB,
 
-        R8G8B8A8
+        RGBA
     }
 }

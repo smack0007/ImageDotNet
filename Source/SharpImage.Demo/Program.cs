@@ -22,7 +22,7 @@ namespace SharpImage.Demo
 
                 Image image = Image.FromFile(fileName);
 
-                int bpp = image.PixelFormat == PixelFormat.R8G8B8A8 ? 4 : 3;
+                int bpp = image.PixelFormat == PixelFormat.RGBA ? 4 : 3;
 
                 for (int i = 0; i < image.Pixels.Length; i += bpp)
                 {
