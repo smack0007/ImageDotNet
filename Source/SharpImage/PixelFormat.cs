@@ -1,15 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpImage
+﻿namespace SharpImage
 {
     public enum PixelFormat
     {
         RGB,
 
-        RGBA
+        RGBA,
+
+        BGR,
+
+        BGRA
+    }
+
+    public static class PixelFormatExtensions
+    {
+        public static int GetBytesPerPixel(this PixelFormat format)
+        {
+            switch (format)
+            {
+                case PixelFormat.RGB:
+                case PixelFormat.BGR:
+                    return 3;
+
+                case PixelFormat.RGBA:
+                case PixelFormat.BGRA:
+                    return 4;
+            }
+
+            return 0;
+        }
     }
 }

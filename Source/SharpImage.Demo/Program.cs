@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpImage.Demo
 {
@@ -22,13 +18,13 @@ namespace SharpImage.Demo
 
                 Image image = Image.FromFile(fileName);
 
-                int bpp = image.PixelFormat == PixelFormat.RGBA ? 4 : 3;
+                Console.WriteLine(image.Format.ToString());
 
-                for (int i = 0; i < image.Pixels.Length; i += bpp)
+                for (int i = 0; i < image.Length; i += image.BytesPerPixel)
                 {
-                    for (int j = 0; j < bpp; j++)
+                    for (int j = 0; j < image.BytesPerPixel; j++)
                     {
-                        Console.Write(image.Pixels[i + j] + " ");
+                        Console.Write("{0:000} ", image[i + j]);
                     }
 
                     Console.WriteLine();
