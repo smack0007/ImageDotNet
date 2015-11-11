@@ -10,6 +10,8 @@ namespace SharpImage.Demo
             {
                 "Image24bitsNoRLE.tga",
                 "Image32bitsNoRLE.tga",
+                "Image24bitsRLE.tga",
+                "Image32bitsRLE.tga",
             };
 
             foreach (string fileName in fileNames)

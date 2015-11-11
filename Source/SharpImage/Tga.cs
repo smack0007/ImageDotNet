@@ -15,8 +15,8 @@ namespace SharpImage
 
             byte type = header[2];
 
-            if (type != UncompressedTrueColor)
-                throw new ImageFormatException("Only UncompressedTrueColor TGA files are supported.");
+            if (type != UncompressedTrueColor && type != RunLengthEncodedTrueColor)
+                throw new ImageFormatException("Only UncompressedTrueColor and RunLengthEncodedTrueColor TGA images are supported.");
 
             short width = (short)((header[13] << 8) | header[12]);
             short height = (short)((header[15] << 8) | header[14]);
@@ -27,8 +27,49 @@ namespace SharpImage
 
             PixelFormat format = bpp == 3 ? PixelFormat.BGR : PixelFormat.BGRA;
 
+            byte[] pixels = null;
             int dataLength = width * height * bpp;
-            byte[] pixels = br.ReadBytes(dataLength);
+
+            if (type == UncompressedTrueColor)
+            {
+                pixels = br.ReadBytes(dataLength);
+            }
+            else
+            {
+                pixels = new byte[dataLength];
+
+                int readCount = 0;
+                while (readCount < dataLength)
+                {
+                    byte nextByte = br.ReadByte();
+
+                    if ((nextByte & 0x80) != 0) // Check high bit
+                    {
+                        nextByte -= 127; 
+                        byte[] bytes = br.ReadBytes(bpp);
+
+                        for (int i = 0; i < nextByte; i++)
+                        {
+                            for (int j = 0; j < bytes.Length; j++)
+                            {
+                                pixels[readCount] = bytes[j];
+                                readCount++;
+                            }
+                        }
+                    }
+                    else // Raw chunk
+                    {
+                        nextByte += 1;
+                        byte[] bytes = br.ReadBytes(nextByte * bpp);
+
+                        for (int i = 0; i < bytes.Length; i++)
+                        {
+                            pixels[readCount] = bytes[i];
+                            readCount++;
+                        }
+                    }
+                }
+            }
 
             for (int y = 0; y < height / 2; y++)
             {
