@@ -40,7 +40,7 @@ namespace SharpImage
                     return ImageFormat.Tga;
             }
 
-            throw new ImageFormatException($"ImageFormat cannot be determined for file {fileName}. Use overload which specifies the ImageFormat.");
+            throw new ImageFormatException($"ImageFormat cannot be determined for file '{fileName}'. Use overload which specifies the ImageFormat.");
         }
 
         public static Image FromFile(string fileName)
