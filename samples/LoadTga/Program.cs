@@ -1,12 +1,15 @@
 ﻿using System;
+using System.IO;
 
-namespace SharpImage.Demo
+namespace ImageDotNet.Demo
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            string[] fileNames = new string[]
+            var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+
+            var fileNames = new string[]
             {
                 "Image24bitsNoRLE.tga",
                 "Image32bitsNoRLE.tga",
@@ -18,7 +21,7 @@ namespace SharpImage.Demo
             {
                 Console.WriteLine("{0}:", fileName);
 
-                Image image = Image.FromFile(fileName);
+                Image image = Image.FromFile(Path.Combine(basePath, fileName));
 
                 Console.WriteLine(image.Format.ToString());
 
@@ -34,9 +37,6 @@ namespace SharpImage.Demo
 
                 Console.WriteLine();
             }
-
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
     }
 }

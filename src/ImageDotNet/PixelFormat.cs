@@ -1,4 +1,4 @@
-﻿namespace SharpImage
+﻿namespace ImageDotNet
 {
     public enum PixelFormat
     {

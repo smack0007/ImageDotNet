@@ -1,12 +1,9 @@
 ﻿using System.IO;
 
-namespace SharpImage
+namespace ImageDotNet
 {
     public static class Tga
     {
-        const byte UncompressedTrueColor = 2;
-        const byte RunLengthEncodedTrueColor = 10;
-
         public static Image FromStream(Stream stream)
         {
             BinaryReader br = new BinaryReader(stream);
@@ -15,11 +12,11 @@ namespace SharpImage
 
             byte type = header[2];
 
-            if (type != UncompressedTrueColor && type != RunLengthEncodedTrueColor)
+            if (type != (byte)TgaType.UncompressedTrueColor && type != (byte)TgaType.RunLengthEncodedTrueColor)
                 throw new ImageFormatException("Only UncompressedTrueColor and RunLengthEncodedTrueColor TGA images are supported.");
 
-            short width = (short)((header[13] << 8) | header[12]);
-            short height = (short)((header[15] << 8) | header[14]);
+            ushort width = BinaryHelper.ReadLittleEndianUInt16(header, 12);
+            ushort height = BinaryHelper.ReadLittleEndianUInt16(header, 14);
             byte bpp = (byte)(header[16] / 8);
 
             if (bpp != 3 && bpp != 4)
@@ -30,7 +27,7 @@ namespace SharpImage
             byte[] pixels = null;
             int dataLength = width * height * bpp;
 
-            if (type == UncompressedTrueColor)
+            if (type == (byte)TgaType.UncompressedTrueColor)
             {
                 pixels = br.ReadBytes(dataLength);
             }
@@ -90,5 +87,17 @@ namespace SharpImage
             return new Image(width, height, format, pixels);
         }
 
+        public static void Save(Image image, TgaType type, Stream stream)
+        {
+            BinaryWriter bw = new BinaryWriter(stream);
+
+            byte[] header = new byte[18];
+            header[2] = (byte)type;
+            BinaryHelper.WriteLittleEndianUInt16(header, 12, (ushort)image.Width);
+            BinaryHelper.WriteLittleEndianUInt16(header, 14, (ushort)image.Height);
+            header[16] = (byte)(image.BytesPerPixel * 8);
+
+            bw.Write(header);
+        }
     }
 }

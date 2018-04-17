@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpImage
+namespace ImageDotNet
 {
     public class ImageFormatException : Exception
     {
