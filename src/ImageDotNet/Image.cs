@@ -13,7 +13,7 @@ namespace ImageDotNet
 
         public PixelFormat Format { get; private set; }
 
-        public int BytesPerPixel => this.Format.GetBytesPerPixel();
+        public int BytesPerPixel => (int)this.Format;
 
         public int Length => this.pixels.Length;
 
@@ -65,78 +65,6 @@ namespace ImageDotNet
             }
 
             throw new NotImplementedException("ImageFormat." + format.ToString() + " not implemented.");
-        }
-
-        public void ChangePixelFormat(PixelFormat format)
-        {
-            if (format == this.Format)
-                return;
-
-            bool implemented = false;
-
-            switch (this.Format)
-            {
-                case PixelFormat.RGB:
-                    {
-                        switch (format)
-                        {
-                            case PixelFormat.BGR:
-                                this.SwapRedAndBluePixelValues();
-                                implemented = true;
-                                break;
-                        }
-                    }
-                    break;
-
-                case PixelFormat.RGBA:
-                    {
-                        switch (format)
-                        {
-                            case PixelFormat.BGRA:
-                                this.SwapRedAndBluePixelValues();
-                                implemented = true;
-                                break;
-                        }
-                    }
-                    break;
-
-                case PixelFormat.BGR:
-                    {
-                        switch (format)
-                        {
-                            case PixelFormat.RGB:
-                                this.SwapRedAndBluePixelValues();
-                                implemented = true;
-                                break;
-                        }
-                    }
-                    break;
-
-                case PixelFormat.BGRA:
-                    {
-                        switch (format)
-                        {
-                            case PixelFormat.RGBA:
-                                this.SwapRedAndBluePixelValues();
-                                implemented = true;
-                                break;
-                        }
-                    }
-                    break;
-            }
-
-            if (!implemented)
-                throw new NotImplementedException($"Conversion from format {this.Format.ToString()} to {format.ToString()} is not implemented.");
-        }
-
-        private void SwapRedAndBluePixelValues()
-        {
-            for (int i = 0; i < this.pixels.Length; i += this.BytesPerPixel)
-            {
-                byte temp = this.pixels[i];
-                this.pixels[i] = this.pixels[i + 2];
-                this.pixels[i + 2] = temp;
-            }
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ImageDotNet
             if (bpp != 3 && bpp != 4)
                 throw new ImageFormatException("Only 24 and 32 bit TGA images are supported.");
 
-            PixelFormat format = bpp == 3 ? PixelFormat.BGR : PixelFormat.BGRA;
+            PixelFormat format = bpp == 3 ? PixelFormat.RGB : PixelFormat.RGBA;
 
             byte[] pixels = null;
             int dataLength = width * height * bpp;
@@ -75,9 +75,17 @@ namespace ImageDotNet
                     int top = ((y * width) + x) * bpp;
                     int bottom = (((height - 1 - y) * width) + x) * bpp;
 
+                    byte temp = pixels[top];
+                    pixels[top] = pixels[top + 2];
+                    pixels[top + 2] = temp;
+
+                    temp = pixels[bottom];
+                    pixels[bottom] = pixels[bottom + 2];
+                    pixels[bottom + 2] = temp;
+
                     for (int i = 0; i < bpp; i++)
                     {
-                        byte temp = pixels[top + i];
+                        temp = pixels[top + i];
                         pixels[top + i] = pixels[bottom + i];
                         pixels[bottom + i] = temp;
                     }
