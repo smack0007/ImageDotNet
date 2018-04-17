@@ -1,33 +1,29 @@
 ﻿using System.IO;
 
-namespace ImageDotNet
+namespace ImageDotNet.Tga
 {
-    public static class Tga
+    public static class TgaImage
     {
-        public static Image FromStream(Stream stream)
+        public static Image Load(Stream stream)
         {
             BinaryReader br = new BinaryReader(stream);
             
-            byte[] header = br.ReadBytes(18);
+            var header = br.ReadStruct<TgaHeader>();
 
-            byte type = header[2];
+            if (header.DataTypeCode != TgaDataType.UncompressedTrueColor && header.DataTypeCode != TgaDataType.RunLengthEncodedTrueColor)
+                throw new ImageFormatException($"Only {nameof(TgaDataType.UncompressedTrueColor)} and {nameof(TgaDataType.RunLengthEncodedTrueColor)} TGA images are supported.");
+            
+            byte bytesPerPixel = (byte)(header.BitsPerPixel / 8);
 
-            if (type != (byte)TgaType.UncompressedTrueColor && type != (byte)TgaType.RunLengthEncodedTrueColor)
-                throw new ImageFormatException("Only UncompressedTrueColor and RunLengthEncodedTrueColor TGA images are supported.");
-
-            ushort width = BinaryHelper.ReadLittleEndianUInt16(header, 12);
-            ushort height = BinaryHelper.ReadLittleEndianUInt16(header, 14);
-            byte bpp = (byte)(header[16] / 8);
-
-            if (bpp != 3 && bpp != 4)
+            if (bytesPerPixel != 3 && bytesPerPixel != 4)
                 throw new ImageFormatException("Only 24 and 32 bit TGA images are supported.");
 
-            PixelFormat format = bpp == 3 ? PixelFormat.RGB : PixelFormat.RGBA;
+            PixelFormat format = bytesPerPixel == 3 ? PixelFormat.RGB : PixelFormat.RGBA;
 
             byte[] pixels = null;
-            int dataLength = width * height * bpp;
+            int dataLength = header.Width * header.Height * bytesPerPixel;
 
-            if (type == (byte)TgaType.UncompressedTrueColor)
+            if (header.DataTypeCode == TgaDataType.UncompressedTrueColor)
             {
                 pixels = br.ReadBytes(dataLength);
             }
@@ -43,7 +39,7 @@ namespace ImageDotNet
                     if ((nextByte & 0x80) != 0) // Check high bit
                     {
                         nextByte -= 127; 
-                        byte[] bytes = br.ReadBytes(bpp);
+                        byte[] bytes = br.ReadBytes(bytesPerPixel);
 
                         for (int i = 0; i < nextByte; i++)
                         {
@@ -57,7 +53,7 @@ namespace ImageDotNet
                     else // Raw chunk
                     {
                         nextByte += 1;
-                        byte[] bytes = br.ReadBytes(nextByte * bpp);
+                        byte[] bytes = br.ReadBytes(nextByte * bytesPerPixel);
 
                         for (int i = 0; i < bytes.Length; i++)
                         {
@@ -68,12 +64,12 @@ namespace ImageDotNet
                 }
             }
 
-            for (int y = 0; y < height / 2; y++)
+            for (int y = 0; y < header.Height / 2; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < header.Width; x++)
                 {
-                    int top = ((y * width) + x) * bpp;
-                    int bottom = (((height - 1 - y) * width) + x) * bpp;
+                    int top = ((y * header.Width) + x) * bytesPerPixel;
+                    int bottom = (((header.Height - 1 - y) * header.Width) + x) * bytesPerPixel;
 
                     byte temp = pixels[top];
                     pixels[top] = pixels[top + 2];
@@ -83,7 +79,7 @@ namespace ImageDotNet
                     pixels[bottom] = pixels[bottom + 2];
                     pixels[bottom + 2] = temp;
 
-                    for (int i = 0; i < bpp; i++)
+                    for (int i = 0; i < bytesPerPixel; i++)
                     {
                         temp = pixels[top + i];
                         pixels[top + i] = pixels[bottom + i];
@@ -92,10 +88,10 @@ namespace ImageDotNet
                 }
             }
 
-            return new Image(width, height, format, pixels);
+            return new Image(header.Width, header.Height, format, pixels);
         }
 
-        public static void Save(Image image, TgaType type, Stream stream)
+        public static void Save(Image image, TgaDataType type, Stream stream)
         {
             BinaryWriter bw = new BinaryWriter(stream);
 

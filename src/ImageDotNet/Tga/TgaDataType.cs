@@ -1,6 +1,6 @@
-namespace ImageDotNet
+namespace ImageDotNet.Tga
 {
-    public enum TgaType : byte
+    public enum TgaDataType : byte
     {
         UncompressedTrueColor = 2,
         

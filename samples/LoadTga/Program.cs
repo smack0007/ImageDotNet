@@ -21,7 +21,7 @@ namespace ImageDotNet.Demo
             {
                 Console.WriteLine("{0}:", fileName);
 
-                Image image = Image.FromFile(Path.Combine(basePath, fileName));
+                Image image = Image.Load(Path.Combine(basePath, fileName));
 
                 Console.WriteLine(image.Format.ToString());
 

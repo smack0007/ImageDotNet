@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ImageDotNet.Tga;
 
 namespace ImageDotNet
 {
@@ -43,28 +44,28 @@ namespace ImageDotNet
             throw new ImageFormatException($"ImageFormat cannot be determined for file '{fileName}'. Use overload which specifies the ImageFormat.");
         }
 
-        public static Image FromFile(string fileName)
+        public static Image Load(string fileName)
         {
-            return FromFile(fileName, GetImageFormatFromFileName(fileName));
+            return Load(fileName, GetImageFormatFromFileName(fileName));
         }
 
-        public static Image FromFile(string fileName, ImageFormat format)
+        public static Image Load(string fileName, ImageFormat format)
         {
-            using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
-                return FromStream(stream, format);
+                return Load(file, format);
             }
         }
 
-        public static Image FromStream(Stream stream, ImageFormat format)
+        public static Image Load(Stream stream, ImageFormat format)
         {
             switch (format)
             {
                 case ImageFormat.Tga:
-                    return Tga.FromStream(stream);
+                    return TgaImage.Load(stream);
             }
 
-            throw new NotImplementedException("ImageFormat." + format.ToString() + " not implemented.");
+            throw new NotImplementedException($"{nameof(ImageFormat)}.{format.ToString()} not implemented.");
         }
     }
 }
