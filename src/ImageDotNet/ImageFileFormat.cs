@@ -1,6 +1,6 @@
 ﻿namespace ImageDotNet
 {
-    public enum ImageFormat
+    public enum ImageFileFormat
     {
         Tga
     }

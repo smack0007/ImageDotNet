@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ImageDotNet.Tga;
 
 namespace ImageDotNet.Demo
 {
@@ -23,7 +24,7 @@ namespace ImageDotNet.Demo
 
                 Image image = Image.Load(Path.Combine(basePath, fileName));
 
-                Console.WriteLine(image.Format.ToString());
+                Console.WriteLine(image.GetType().Name);
 
                 for (int i = 0; i < image.Length; i += image.BytesPerPixel)
                 {
@@ -37,6 +38,9 @@ namespace ImageDotNet.Demo
 
                 Console.WriteLine();
             }
+
+            Image image2 = Image.Load(Path.Combine(basePath, fileNames[0]));
+            image2.SaveTga(Path.Combine(basePath, "output.tga"));
         }
     }
 }

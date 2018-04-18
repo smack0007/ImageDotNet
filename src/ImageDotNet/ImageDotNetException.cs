@@ -2,9 +2,9 @@
 
 namespace ImageDotNet
 {
-    public class ImageFormatException : Exception
+    public class ImageDotNetException : Exception
     {
-        public ImageFormatException(string message)
+        public ImageDotNetException(string message)
             : base(message)
         {
         }

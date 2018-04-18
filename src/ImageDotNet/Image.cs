@@ -4,52 +4,50 @@ using ImageDotNet.Tga;
 
 namespace ImageDotNet
 {
-    public class Image
+    public abstract class Image
     {
         private readonly byte[] pixels;
 
-        public int Width { get; private set; }
+        public int Width { get; }
 
-        public int Height { get; private set; }
+        public int Height { get; }
 
-        public PixelFormat Format { get; private set; }
-
-        public int BytesPerPixel => (int)this.Format;
+        public abstract int BytesPerPixel { get; }
 
         public int Length => this.pixels.Length;
 
-        public byte this[int index]
-        {
-            get { return this.pixels[index]; }
-        }
+        public ref byte this[int index] => ref this.pixels[index];
         
-        public Image(int width, int height, PixelFormat pixelFormat, byte[] pixels)
+        protected Image(int width, int height, byte[] pixels)
         {
             this.Width = width;
             this.Height = height;
-            this.Format = pixelFormat;
             this.pixels = pixels;
+
+            int pixelsLength = this.Width * this.Height * this.BytesPerPixel;
+            if (this.pixels.Length != pixelsLength)
+                throw new ImageDotNetException($"The format of the pixels is incorrect. The length of the pixels array should be {pixelsLength} but was {this.pixels.Length}");
         }
 
-        public static ImageFormat GetImageFormatFromFileName(string fileName)
+        public static ImageFileFormat GetImageFileFormatFromFileName(string fileName)
         {
             string fileExtension = Path.GetExtension(fileName).Substring(1).ToLower();
 
             switch (fileExtension)
             {
                 case "tga":
-                    return ImageFormat.Tga;
+                    return ImageFileFormat.Tga;
             }
 
-            throw new ImageFormatException($"ImageFormat cannot be determined for file '{fileName}'. Use overload which specifies the ImageFormat.");
+            throw new ImageDotNetException($"{nameof(ImageFileFormat)} cannot be determined for file '{fileName}'. Use overload which specifies the ImageFormat.");
         }
 
         public static Image Load(string fileName)
         {
-            return Load(fileName, GetImageFormatFromFileName(fileName));
+            return Load(fileName, GetImageFileFormatFromFileName(fileName));
         }
 
-        public static Image Load(string fileName, ImageFormat format)
+        public static Image Load(string fileName, ImageFileFormat format)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
@@ -57,15 +55,15 @@ namespace ImageDotNet
             }
         }
 
-        public static Image Load(Stream stream, ImageFormat format)
+        public static Image Load(Stream stream, ImageFileFormat format)
         {
             switch (format)
             {
-                case ImageFormat.Tga:
+                case ImageFileFormat.Tga:
                     return TgaImage.Load(stream);
             }
 
-            throw new NotImplementedException($"{nameof(ImageFormat)}.{format.ToString()} not implemented.");
+            throw new NotImplementedException($"{nameof(ImageFileFormat)}.{format.ToString()} not implemented.");
         }
     }
 }

@@ -11,14 +11,12 @@ namespace ImageDotNet.Tga
             var header = br.ReadStruct<TgaHeader>();
 
             if (header.DataTypeCode != TgaDataType.UncompressedTrueColor && header.DataTypeCode != TgaDataType.RunLengthEncodedTrueColor)
-                throw new ImageFormatException($"Only {nameof(TgaDataType.UncompressedTrueColor)} and {nameof(TgaDataType.RunLengthEncodedTrueColor)} TGA images are supported.");
+                throw new ImageDotNetException($"Only {nameof(TgaDataType.UncompressedTrueColor)} and {nameof(TgaDataType.RunLengthEncodedTrueColor)} TGA images are supported.");
             
             byte bytesPerPixel = (byte)(header.BitsPerPixel / 8);
 
             if (bytesPerPixel != 3 && bytesPerPixel != 4)
-                throw new ImageFormatException("Only 24 and 32 bit TGA images are supported.");
-
-            PixelFormat format = bytesPerPixel == 3 ? PixelFormat.RGB : PixelFormat.RGBA;
+                throw new ImageDotNetException("Only 24 and 32 bit TGA images are supported.");
 
             byte[] pixels = null;
             int dataLength = header.Width * header.Height * bytesPerPixel;
@@ -88,10 +86,17 @@ namespace ImageDotNet.Tga
                 }
             }
 
-            return new Image(header.Width, header.Height, format, pixels);
+            if (bytesPerPixel == 3)
+            {
+                return new RgbImage(header.Width, header.Height, pixels);
+            }
+            else
+            {
+                return new RgbaImage(header.Width, header.Height, pixels);
+            }
         }
 
-        public static void Save(Image image, TgaDataType type, Stream stream)
+        public static void Save(Image image, Stream stream, TgaDataType type = TgaDataType.UncompressedTrueColor)
         {
             BinaryWriter bw = new BinaryWriter(stream);
 
@@ -102,6 +107,9 @@ namespace ImageDotNet.Tga
             header[16] = (byte)(image.BytesPerPixel * 8);
 
             bw.Write(header);
+
+            byte[] pixels = new byte[image.Width * image.Height * image.BytesPerPixel];
+            bw.Write(pixels);
         }
     }
 }
