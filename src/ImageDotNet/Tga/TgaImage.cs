@@ -62,6 +62,7 @@ namespace ImageDotNet.Tga
                 }
             }
 
+            // Half height because we have to flip the image.
             for (int y = 0; y < header.Height / 2; y++)
             {
                 for (int x = 0; x < header.Width; x++)
@@ -69,10 +70,12 @@ namespace ImageDotNet.Tga
                     int top = ((y * header.Width) + x) * bytesPerPixel;
                     int bottom = (((header.Height - 1 - y) * header.Width) + x) * bytesPerPixel;
 
+                    // Change BGR => RGB 
                     byte temp = pixels[top];
                     pixels[top] = pixels[top + 2];
                     pixels[top + 2] = temp;
 
+                    // Change BGR => RGB 
                     temp = pixels[bottom];
                     pixels[bottom] = pixels[bottom + 2];
                     pixels[bottom + 2] = temp;
@@ -109,7 +112,37 @@ namespace ImageDotNet.Tga
             bw.Write(header);
 
             byte[] pixels = new byte[image.Width * image.Height * image.BytesPerPixel];
+
+            for (int y = 0; y < image.Height / 2; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    int top = ((y * image.Width) + x) * image.BytesPerPixel;
+                    int bottom = (((image.Height - 1 - y) * image.Width) + x) * image.BytesPerPixel;
+
+                    if (image.BytesPerPixel >= 3)
+                    {
+                        // We have to flip RGB to BGR and flip bottom and top
+                        pixels[top] = image[bottom + 2];
+                        pixels[top + 1] = image[bottom + 1];
+                        pixels[top + 2] = image[bottom];
+
+                        pixels[bottom] = image[top + 2];
+                        pixels[bottom + 1] = image[top + 1];
+                        pixels[bottom + 2] = image[top];
+
+                        if (image.BytesPerPixel == 4)
+                        {
+                            pixels[top + 3] = image[bottom + 3];
+                            pixels[bottom + 3] = image[top + 3];
+                        }
+                    }
+                }
+            }
+
             bw.Write(pixels);
+
+            bw.Flush();
         }
     }
 }

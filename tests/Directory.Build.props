@@ -1,0 +1,7 @@
+<Project>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+    <ItemGroup>
+        <ProjectReference Include="$(RepositoryRootDirectory)src\ImageDotNet\ImageDotNet.csproj" />
+    </ItemGroup>
+</Project>
