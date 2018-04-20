@@ -102,6 +102,20 @@ namespace ImageDotNet
                 }
             }
 
+            // If we have an odd number of lines, we need to flip BGR => RGB on
+            // the middle line.
+            if (height % 2 == 1)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int middle = (((height / 2) * width) + x) * bytesPerPixel;
+
+                    byte temp = pixels[middle];
+                    pixels[middle] = pixels[middle + 2];
+                    pixels[middle + 2] = temp;
+                }
+            }
+
             if (bytesPerPixel == 3)
             {
                 return new RgbImage(width, height, pixels);
@@ -157,6 +171,25 @@ namespace ImageDotNet
                             pixels[top + 3] = this[bottom + 3];
                             pixels[bottom + 3] = this[top + 3];
                         }
+                    }
+                }
+            }
+
+            // If we have an odd number of lines, we need to copy the middle line.
+            if (this.Height % 2 == 1)
+            {
+                for (int x = 0; x < this.Width; x++)
+                {
+                    int middle = (((this.Height / 2) * this.Width) + x) * this.BytesPerPixel;
+
+                    if (this.BytesPerPixel >= 3)
+                    {
+                        pixels[middle] = this[middle + 2];
+                        pixels[middle + 1] = this[middle + 1];
+                        pixels[middle + 2] = this[middle];
+
+                        if (this.BytesPerPixel == 4)
+                            pixels[middle + 3] = this[middle + 3];
                     }
                 }
             }
