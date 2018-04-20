@@ -22,7 +22,7 @@ namespace ImageDotNet.Demo
             {
                 Console.WriteLine("{0}:", fileName);
 
-                Image image = Image.Load(Path.Combine(basePath, fileName));
+                Image image = Image.LoadTga(Path.Combine(basePath, fileName));
 
                 Console.WriteLine(image.GetType().Name);
 
@@ -39,7 +39,7 @@ namespace ImageDotNet.Demo
                 Console.WriteLine();
             }
 
-            Image image2 = Image.Load(Path.Combine(basePath, fileNames[0]));
+            Image image2 = Image.LoadTga(Path.Combine(basePath, fileNames[0]));
             image2.SaveTga(Path.Combine(basePath, "output.tga"));
         }
     }

@@ -3,31 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace ImageDotNet.Tga
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TgaHeader
+    public static class TgaHeader
     {
-        public byte IdLength;
+        public const int SizeInBytes = 18;
 
-        public byte ColorMapType;
+        public const int DataTypeCode = 2;
 
-        public TgaDataType DataTypeCode;
+        public const int Width = 12;
 
-        public ushort ColorMapOrigin;
+        public const int Height = 14;
 
-        public ushort ColorMapLength;
-
-        public byte ColorMapDepth;
-
-        public ushort XOrigin;
-
-        public ushort YOrigin;
-
-        public ushort Width;
-
-        public ushort Height;
-
-        public byte BitsPerPixel;
-
-        public byte ImageDescriptor;
+        public const int BitsPerPixel = 16;
     }
 }

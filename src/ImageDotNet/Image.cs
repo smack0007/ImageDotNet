@@ -4,7 +4,7 @@ using ImageDotNet.Tga;
 
 namespace ImageDotNet
 {
-    public abstract class Image
+    public abstract partial class Image
     {
         private readonly byte[] pixels;
 
@@ -40,30 +40,6 @@ namespace ImageDotNet
             }
 
             throw new ImageDotNetException($"{nameof(ImageFileFormat)} cannot be determined for file '{fileName}'. Use overload which specifies the ImageFormat.");
-        }
-
-        public static Image Load(string fileName)
-        {
-            return Load(fileName, GetImageFileFormatFromFileName(fileName));
-        }
-
-        public static Image Load(string fileName, ImageFileFormat format)
-        {
-            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-            {
-                return Load(file, format);
-            }
-        }
-
-        public static Image Load(Stream stream, ImageFileFormat format)
-        {
-            switch (format)
-            {
-                case ImageFileFormat.Tga:
-                    return TgaImage.Load(stream);
-            }
-
-            throw new NotImplementedException($"{nameof(ImageFileFormat)}.{format.ToString()} not implemented.");
         }
     }
 }

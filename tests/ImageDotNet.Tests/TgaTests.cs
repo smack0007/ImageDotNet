@@ -31,7 +31,7 @@ namespace ImageDotNet.Tests
             {
                 image.SaveTga(memory);
                 memory.Position = 0;
-                otherImage = Image.Load(memory, ImageFileFormat.Tga);
+                otherImage = Image.LoadTga(memory);
             }
 
             Assert.Equal(image.Length, otherImage.Length);

@@ -1,27 +1,40 @@
 ﻿using System.IO;
+using ImageDotNet.Tga;
 
-namespace ImageDotNet.Tga
+namespace ImageDotNet
 {
-    public static class TgaImage
+    public abstract partial class Image
     {
-        public static Image Load(Stream stream)
+        public static Image LoadTga(string fileName)
+        {
+            using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                return LoadTga(file);
+            }
+        }
+
+        public static Image LoadTga(Stream stream)
         {
             BinaryReader br = new BinaryReader(stream);
             
-            var header = br.ReadStruct<TgaHeader>();
+            var header = br.ReadBytes(TgaHeader.SizeInBytes);
 
-            if (header.DataTypeCode != TgaDataType.UncompressedTrueColor && header.DataTypeCode != TgaDataType.RunLengthEncodedTrueColor)
+            var dataType = (TgaDataType)header[TgaHeader.DataTypeCode];
+
+            if (dataType != TgaDataType.UncompressedTrueColor && dataType != TgaDataType.RunLengthEncodedTrueColor)
                 throw new ImageDotNetException($"Only {nameof(TgaDataType.UncompressedTrueColor)} and {nameof(TgaDataType.RunLengthEncodedTrueColor)} TGA images are supported.");
-            
-            byte bytesPerPixel = (byte)(header.BitsPerPixel / 8);
+
+            ushort width = BinaryHelper.ReadLittleEndianUInt16(header, TgaHeader.Width);
+            ushort height = BinaryHelper.ReadLittleEndianUInt16(header, TgaHeader.Height);
+            byte bytesPerPixel = (byte)(header[TgaHeader.BitsPerPixel] / 8);
 
             if (bytesPerPixel != 3 && bytesPerPixel != 4)
                 throw new ImageDotNetException("Only 24 and 32 bit TGA images are supported.");
 
             byte[] pixels = null;
-            int dataLength = header.Width * header.Height * bytesPerPixel;
+            int dataLength = width * height * bytesPerPixel;
 
-            if (header.DataTypeCode == TgaDataType.UncompressedTrueColor)
+            if (dataType == TgaDataType.UncompressedTrueColor)
             {
                 pixels = br.ReadBytes(dataLength);
             }
@@ -63,12 +76,12 @@ namespace ImageDotNet.Tga
             }
 
             // Half height because we have to flip the image.
-            for (int y = 0; y < header.Height / 2; y++)
+            for (int y = 0; y < height / 2; y++)
             {
-                for (int x = 0; x < header.Width; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    int top = ((y * header.Width) + x) * bytesPerPixel;
-                    int bottom = (((header.Height - 1 - y) * header.Width) + x) * bytesPerPixel;
+                    int top = ((y * width) + x) * bytesPerPixel;
+                    int bottom = (((height - 1 - y) * width) + x) * bytesPerPixel;
 
                     // Change BGR => RGB 
                     byte temp = pixels[top];
@@ -91,50 +104,58 @@ namespace ImageDotNet.Tga
 
             if (bytesPerPixel == 3)
             {
-                return new RgbImage(header.Width, header.Height, pixels);
+                return new RgbImage(width, height, pixels);
             }
             else
             {
-                return new RgbaImage(header.Width, header.Height, pixels);
+                return new RgbaImage(width, height, pixels);
             }
         }
 
-        public static void Save(Image image, Stream stream, TgaDataType type = TgaDataType.UncompressedTrueColor)
+        public void SaveTga(string fileName, TgaDataType dataType = TgaDataType.UncompressedTrueColor)
+        {
+            using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                this.SaveTga(file, dataType);
+            }
+        } 
+
+        public void SaveTga(Stream stream, TgaDataType dataType = TgaDataType.UncompressedTrueColor)
         {
             BinaryWriter bw = new BinaryWriter(stream);
 
-            byte[] header = new byte[18];
-            header[2] = (byte)type;
-            BinaryHelper.WriteLittleEndianUInt16(header, 12, (ushort)image.Width);
-            BinaryHelper.WriteLittleEndianUInt16(header, 14, (ushort)image.Height);
-            header[16] = (byte)(image.BytesPerPixel * 8);
+            var header = new byte[TgaHeader.SizeInBytes];
+            header[TgaHeader.DataTypeCode] = (byte)dataType;
+            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Width, (ushort)this.Width);
+            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Height, (ushort)this.Height);
+            header[TgaHeader.BitsPerPixel] = (byte)(this.BytesPerPixel * 8);
 
             bw.Write(header);
 
-            byte[] pixels = new byte[image.Width * image.Height * image.BytesPerPixel];
+            byte[] pixels = new byte[this.Width * this.Height * this.BytesPerPixel];
 
-            for (int y = 0; y < image.Height / 2; y++)
+            for (int y = 0; y < this.Height / 2; y++)
             {
-                for (int x = 0; x < image.Width; x++)
+                for (int x = 0; x < this.Width; x++)
                 {
-                    int top = ((y * image.Width) + x) * image.BytesPerPixel;
-                    int bottom = (((image.Height - 1 - y) * image.Width) + x) * image.BytesPerPixel;
+                    int top = ((y * this.Width) + x) * this.BytesPerPixel;
+                    int bottom = (((this.Height - 1 - y) * this.Width) + x) * this.BytesPerPixel;
 
-                    if (image.BytesPerPixel >= 3)
+                    if (this.BytesPerPixel >= 3)
                     {
                         // We have to flip RGB to BGR and flip bottom and top
-                        pixels[top] = image[bottom + 2];
-                        pixels[top + 1] = image[bottom + 1];
-                        pixels[top + 2] = image[bottom];
+                        pixels[top] = this[bottom + 2];
+                        pixels[top + 1] = this[bottom + 1];
+                        pixels[top + 2] = this[bottom];
 
-                        pixels[bottom] = image[top + 2];
-                        pixels[bottom + 1] = image[top + 1];
-                        pixels[bottom + 2] = image[top];
+                        pixels[bottom] = this[top + 2];
+                        pixels[bottom + 1] = this[top + 1];
+                        pixels[bottom + 2] = this[top];
 
-                        if (image.BytesPerPixel == 4)
+                        if (this.BytesPerPixel == 4)
                         {
-                            pixels[top + 3] = image[bottom + 3];
-                            pixels[bottom + 3] = image[top + 3];
+                            pixels[top + 3] = this[bottom + 3];
+                            pixels[bottom + 3] = this[top + 3];
                         }
                     }
                 }
