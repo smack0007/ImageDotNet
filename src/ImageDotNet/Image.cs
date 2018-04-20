@@ -28,18 +28,5 @@ namespace ImageDotNet
             if (this.pixels.Length != pixelsLength)
                 throw new ImageDotNetException($"The format of the pixels is incorrect. The length of the pixels array should be {pixelsLength} but was {this.pixels.Length}");
         }
-
-        public static ImageFileFormat GetImageFileFormatFromFileName(string fileName)
-        {
-            string fileExtension = Path.GetExtension(fileName).Substring(1).ToLower();
-
-            switch (fileExtension)
-            {
-                case "tga":
-                    return ImageFileFormat.Tga;
-            }
-
-            throw new ImageDotNetException($"{nameof(ImageFileFormat)} cannot be determined for file '{fileName}'. Use overload which specifies the ImageFormat.");
-        }
     }
 }
