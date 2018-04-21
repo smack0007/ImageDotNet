@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using ImageDotNet.Tga;
 
 namespace ImageDotNet
@@ -36,5 +37,11 @@ namespace ImageDotNet
         public IEnumerator<byte> GetEnumerator() => (IEnumerator<byte>)this.pixels.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.pixels.GetEnumerator();
+
+        public ImageDataPointer GetDataPointer()
+        {
+            var handle = GCHandle.Alloc(this.pixels, GCHandleType.Pinned);
+            return new ImageDataPointer(handle, this.Length);
+        }
     }
 }
