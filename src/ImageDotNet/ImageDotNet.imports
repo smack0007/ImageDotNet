@@ -1,6 +1,0 @@
-<Project>
-    <ItemGroup>
-        <Compile Include="$(MSBuildThisFileDirectory)*.cs" Exclude="$(MSBuildThisFileDirectory)obj\**\*.cs" Visible="false" />
-        <Compile Include="$(MSBuildThisFileDirectory)Tga\*.cs" Visible="false" />
-    </ItemGroup>
-</Project>
