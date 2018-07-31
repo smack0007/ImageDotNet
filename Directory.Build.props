@@ -4,5 +4,38 @@
         <RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
         <BinDirectory>$(RepositoryRootDirectory)bin\</BinDirectory>
         <OutputPath>$([System.IO.Path]::GetFullPath('$(BinDirectory)$(Configuration)'))\$(MSBuildProjectName)</OutputPath>
+        <LangVersion>latest</LangVersion>
+
+        <CurrentYear>$([System.DateTime]::Now.ToString(yy))</CurrentYear>
+        <CurrentMonth>$([System.DateTime]::Now.ToString(MM))</CurrentMonth>
+        
+        <PatchNumber Condition=" $(PatchNumber) == '' ">0</PatchNumber>
+        <BuildNumber Condition=" $(BuildNumber) == '' ">0</BuildNumber>
+        <VersionPrefix>$(CurrentYear).$(CurrentMonth).$(PatchNumber)</VersionPrefix>
+        <VersionPostfix>$(BuildNumber)</VersionPostfix>
+
+        <Authors>smack0007</Authors>
+        <Copyright>Copyright © Zachary Snow 2018</Copyright>
+
+        <PackageProjectUrl>https://github.com/smack0007/ImageDotNet/</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/smack0007/ImageDotNet/master/License.txt</PackageLicenseUrl>
+        <PackageTags>glfw</PackageTags>
+
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/smack0007/ImageDotNet.git</RepositoryUrl>
     </PropertyGroup>
+
+    <Target Name="WriteLaunchers" AfterTargets="CopyFilesToOutputDirectory" Condition=" $(OutputType) == 'Exe' ">
+      <PropertyGroup>
+        <LauncherCmd>
+@ECHO OFF
+dotnet %~dp0$(AssemblyName)\$(TargetFramework)\$(AssemblyName).dll %*
+        </LauncherCmd>
+      </PropertyGroup>
+
+      <WriteLinesToFile
+        File="$(BinDirectory)$(Configuration)\$(AssemblyName).cmd"
+        Overwrite="true"
+        Lines="$(LauncherCmd)" />
+    </Target>
 </Project>
