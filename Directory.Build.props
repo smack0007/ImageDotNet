@@ -19,7 +19,7 @@
 
         <PackageProjectUrl>https://github.com/smack0007/ImageDotNet/</PackageProjectUrl>
         <PackageLicenseUrl>https://raw.githubusercontent.com/smack0007/ImageDotNet/master/License.txt</PackageLicenseUrl>
-        <PackageTags>glfw</PackageTags>
+        <PackageTags>images</PackageTags>
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/smack0007/ImageDotNet.git</RepositoryUrl>

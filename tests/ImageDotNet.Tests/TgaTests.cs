@@ -1,8 +1,5 @@
-using System;
 using System.IO;
 using Xunit;
-using ImageDotNet;
-using ImageDotNet.Tga;
 using Xunit.Abstractions;
 
 namespace ImageDotNet.Tests

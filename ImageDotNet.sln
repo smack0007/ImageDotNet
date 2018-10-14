@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A976547A-9913-413B-BE36-5659C57E8DEB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{BE5BA79A-2DB6-4395-8F6D-5AE9E6224EC4}"
+	ProjectSection(SolutionItems) = preProject
+		samples\Directory.Build.props = samples\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageDotNet", "src\ImageDotNet\ImageDotNet.csproj", "{7E916D22-250B-4930-8B8E-A66FCC90F7C1}"
 EndProject
@@ -13,7 +16,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoadTga", "samples\LoadTga\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4DFB16AE-A626-4162-9208-F2F183876F5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageDotNet.Tests", "tests\ImageDotNet.Tests\ImageDotNet.Tests.csproj", "{68CEC028-C666-4D23-AE04-BCFFA3A1C48F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageDotNet.Tests", "tests\ImageDotNet.Tests\ImageDotNet.Tests.csproj", "{68CEC028-C666-4D23-AE04-BCFFA3A1C48F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{B117A084-C9E7-4FB0-A309-8847287C14D0}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadPng", "samples\LoadPng\LoadPng.csproj", "{FF88B978-160F-45C5-B99C-030EF43DAE32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,14 +43,22 @@ Global
 		{68CEC028-C666-4D23-AE04-BCFFA3A1C48F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68CEC028-C666-4D23-AE04-BCFFA3A1C48F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68CEC028-C666-4D23-AE04-BCFFA3A1C48F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF88B978-160F-45C5-B99C-030EF43DAE32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF88B978-160F-45C5-B99C-030EF43DAE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF88B978-160F-45C5-B99C-030EF43DAE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF88B978-160F-45C5-B99C-030EF43DAE32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{A976547A-9913-413B-BE36-5659C57E8DEB} = {B117A084-C9E7-4FB0-A309-8847287C14D0}
+		{BE5BA79A-2DB6-4395-8F6D-5AE9E6224EC4} = {B117A084-C9E7-4FB0-A309-8847287C14D0}
 		{7E916D22-250B-4930-8B8E-A66FCC90F7C1} = {A976547A-9913-413B-BE36-5659C57E8DEB}
 		{019D9827-B030-4E91-9B38-61D5335F97CD} = {BE5BA79A-2DB6-4395-8F6D-5AE9E6224EC4}
+		{4DFB16AE-A626-4162-9208-F2F183876F5F} = {B117A084-C9E7-4FB0-A309-8847287C14D0}
 		{68CEC028-C666-4D23-AE04-BCFFA3A1C48F} = {4DFB16AE-A626-4162-9208-F2F183876F5F}
+		{FF88B978-160F-45C5-B99C-030EF43DAE32} = {BE5BA79A-2DB6-4395-8F6D-5AE9E6224EC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {92D81549-14ED-4DBA-BCE6-FB5E6FED1939}

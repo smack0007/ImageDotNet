@@ -1,5 +1,5 @@
 <Project>
     <ItemGroup>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)src\ImageDotNet\ImageDotNet.csproj" />        
+        <ProjectReference Include="$(MSBuildThisFileDirectory)src\GLDotNet\GLDotNet.csproj" />        
     </ItemGroup>
 </Project>
