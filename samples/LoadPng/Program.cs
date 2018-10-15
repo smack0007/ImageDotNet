@@ -36,8 +36,8 @@ namespace LoadPng
                 Console.WriteLine();
             }
 
-            //Image image2 = Image.LoadTga(Path.Combine(basePath, fileNames[0]));
-            //image2.SaveTga(Path.Combine(basePath, "output.tga"));
+            Image image2 = Image.LoadPng(Path.Combine(basePath, fileNames[0]));
+            image2.SavePng(Path.Combine(basePath, "output.png"));
         }
     }
 }

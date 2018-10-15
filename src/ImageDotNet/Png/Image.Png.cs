@@ -82,7 +82,7 @@ namespace ImageDotNet
                                 bytesPerPixel = 3;
                                 break;
 
-                            case 6: // RGB
+                            case 6: // RGBA
                                 bytesPerPixel = 4;
                                 break;
                         }
@@ -121,6 +121,8 @@ namespace ImageDotNet
 
                 var chunkCrc = new byte[4];
                 stream.Read(chunkCrc, 0, 4);
+
+                int crc = ReadInt(chunkCrc, 0);
             }
 
             if (bytesPerPixel == 3)
@@ -161,6 +163,136 @@ namespace ImageDotNet
             }
 
             return ChunkType.Other;
+        }
+
+        public void SavePng(string fileName)
+        {
+            using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                this.SavePng(file);
+            }
+        }
+
+        public void SavePng(Stream stream)
+        {
+            BinaryWriter bw = new BinaryWriter(stream);
+            bw.Write(HeaderBytes);
+
+            byte[] ihdr = new byte[13];
+            WriteInt(ihdr, 0, (uint)Width);
+            WriteInt(ihdr, 4, (uint)Height);
+            ihdr[8] = 8; // bitDepth
+            ihdr[9] = GetColorType();
+            ihdr[10] = 0; // compressionMethod
+            ihdr[11] = 0; // filterMethod
+            ihdr[12] = 0; // interlaceMethod
+            WriteChunk(bw, "IHDR", ihdr);
+
+            var scanline = new byte[Width * BytesPerPixel + 1]; // Add in an extra byte per scanline
+            scanline[0] = 0;
+
+            byte[] idat = null;
+
+            using (var ms = new MemoryStream(_pixels.Length + 2)) // Add 2 bytes for zlib header
+            {
+                ms.WriteByte(24);
+                ms.WriteByte(87);
+
+                using (var deflate = new DeflateStream(ms, CompressionLevel.Optimal))
+                {
+                    for (int y = 0; y < Height; y++)
+                    {
+                        for (int x = 0; x < Width; x++)
+                        {
+                            for (int i = 0; i < BytesPerPixel; i++)
+                                scanline[(x * BytesPerPixel) + i + 1] = _pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
+                        }
+
+                        deflate.Write(scanline, 0, scanline.Length);
+                    }
+
+                    deflate.Flush();
+                    idat = ms.ToArray();
+                }
+            }
+
+            WriteChunk(bw, "IDAT", idat);
+
+            WriteChunk(bw, "IEND", Array.Empty<byte>());
+
+            bw.Flush();
+        }
+
+        private byte GetColorType()
+        {
+            if (BytesPerPixel == 3)
+            {
+                return 2;
+            }
+            else
+            {
+                return 6;
+            }
+        }
+
+        private static void WriteInt(byte[] buffer, int offset, uint value)
+        {
+            buffer[offset] = (byte)(value & (0xFF << 24));
+            buffer[offset + 1] = (byte)(value & (0xFF << 16));
+            buffer[offset + 2] = (byte)(value & (0xFF << 8));
+            buffer[offset + 3] = (byte)(value & (0xFF));
+        }
+
+        private static void WriteChunk(BinaryWriter bw, string chunkType, byte[] chunkData)
+        {
+            var chunkHeader = new byte[8];
+            WriteInt(chunkHeader, 0, (uint)chunkData.Length);
+
+            for (int i = 0; i < chunkType.Length; i++)
+                chunkHeader[i + 4] = (byte)chunkType[i];
+
+            bw.Write(chunkHeader);
+
+            bw.Write(chunkData);
+
+            uint crc = CalculateCrc(chunkHeader, 4, 4, 0);
+            crc = CalculateCrc(chunkData, 0, chunkData.Length, crc);
+
+            byte[] chunkCrc = new byte[4];
+            WriteInt(chunkCrc, 0, crc);
+
+            bw.Write(chunkCrc);
+        }
+
+        private static uint[] crcTable;
+
+        private static uint CalculateCrc(byte[] buffer, int offset, int length, uint crc)
+        {
+            uint c;
+            if (crcTable == null)
+            {
+                crcTable = new uint[256];
+                for (uint n = 0; n <= 255; n++)
+                {
+                    c = n;
+                    for (var k = 0; k <= 7; k++)
+                    {
+                        if ((c & 1) == 1)
+                            c = 0xEDB88320 ^ ((c >> 1) & 0x7FFFFFFF);
+                        else
+                            c = ((c >> 1) & 0x7FFFFFFF);
+                    }
+                    crcTable[n] = c;
+                }
+            }
+
+            c = crc ^ 0xffffffff;
+            var endOffset = offset + length;
+            for (var i = offset; i < endOffset; i++)
+            {
+                c = crcTable[(c ^ buffer[i]) & 255] ^ ((c >> 8) & 0xFFFFFF);
+            }
+            return c ^ 0xffffffff;
         }
     }
 }
