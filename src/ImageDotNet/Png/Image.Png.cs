@@ -8,13 +8,14 @@ namespace ImageDotNet
     {
         private static readonly byte[] HeaderBytes = new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 
-        private const string IHDR = "IHDR";
-
-        private const string PLTE = "PLTE";
-
-        private const string IDAT = "IDAT";
-
-        private const string IEND = "IEND";
+        enum ChunkType
+        {
+            Other = -1,
+            IHDR,
+            PLTE,
+            IDAT,
+            IEND
+        }
 
         public static Image LoadPng(string fileName)
         {
@@ -56,7 +57,7 @@ namespace ImageDotNet
                 var chunkSize = ReadInt(chunkHeader, 0);
                 var chunkType = ReadChunkType(chunkHeader, 4);
 
-                if (chunkType == IEND)
+                if (chunkType == ChunkType.IEND)
                 {
                     break;
                 }
@@ -66,7 +67,7 @@ namespace ImageDotNet
 
                 switch (chunkType)
                 {
-                    case IHDR:
+                    case ChunkType.IHDR:
                         width = ReadInt(chunkData, 0);
                         height = ReadInt(chunkData, 4);
                         bitDepth = chunkData[8];
@@ -90,11 +91,11 @@ namespace ImageDotNet
                         scanline = new byte[width * bytesPerPixel];
                         break;
 
-                    case PLTE:
+                    case ChunkType.PLTE:
 
                         break;
 
-                    case IDAT:
+                    case ChunkType.IDAT:
                         using (MemoryStream chunkDataStream = new MemoryStream(chunkData))
                         {
                             // Read past the first two bytes of the zlib header
@@ -137,16 +138,29 @@ namespace ImageDotNet
             return (data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3];
         }
 
-        private static string ReadChunkType(byte[] data, int offset)
+        private static ChunkType ReadChunkType(byte[] data, int offset)
         {
-            var result = new char[4];
+            if (data[offset] == 'I')
+            {
+                if (data[offset + 1] == 'D' && data[offset + 2] == 'A' && data[offset + 3] == 'T')
+                {
+                    return ChunkType.IDAT;
+                }
+                else if (data[offset + 1] == 'E' && data[offset + 2] == 'N' && data[offset + 3] == 'D')
+                {
+                    return ChunkType.IEND;
+                }
+                else if (data[offset + 1] == 'H' && data[offset + 2] == 'D' && data[offset + 3] == 'R')
+                {
+                    return ChunkType.IHDR;
+                }
+            }
+            else if (data[offset] == 'P' && data[offset + 1] == 'L' && data[offset + 2] == 'T' && data[offset + 3] == 'E')
+            {
+                return ChunkType.PLTE;
+            }
 
-            result[0] = (char)data[offset];
-            result[1] = (char)data[offset + 1];
-            result[2] = (char)data[offset + 2];
-            result[3] = (char)data[offset + 3];
-
-            return new string(result);
+            return ChunkType.Other;
         }
     }
 }
