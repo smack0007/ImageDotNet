@@ -1,22 +1,13 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
+using ImageDotNet.Png;
 
 namespace ImageDotNet
 {
     public abstract partial class Image
     {
-        private static readonly byte[] HeaderBytes = new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
-
-        enum ChunkType
-        {
-            Other = -1,
-            IHDR,
-            PLTE,
-            IDAT,
-            IEND
-        }
-
         public static Image LoadPng(string fileName)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
@@ -27,12 +18,12 @@ namespace ImageDotNet
 
         public static Image LoadPng(Stream stream)
         {
-            var header = new byte[HeaderBytes.Length];
+            var header = new byte[PngHelper.HeaderBytes.Length];
             stream.Read(header, 0, header.Length);
 
-            for (int i = 0; i < HeaderBytes.Length; i++)
+            for (int i = 0; i < PngHelper.HeaderBytes.Length; i++)
             {
-                if (header[i] != HeaderBytes[i])
+                if (header[i] != PngHelper.HeaderBytes[i])
                     throw new ImageDotNetException("PNG header incorrect.");
             }
 
@@ -57,7 +48,7 @@ namespace ImageDotNet
                 var chunkSize = ReadInt(chunkHeader, 0);
                 var chunkType = ReadChunkType(chunkHeader, 4);
 
-                if (chunkType == ChunkType.IEND)
+                if (chunkType == PngHelper.ChunkType.IEND)
                 {
                     break;
                 }
@@ -67,7 +58,7 @@ namespace ImageDotNet
 
                 switch (chunkType)
                 {
-                    case ChunkType.IHDR:
+                    case PngHelper.ChunkType.IHDR:
                         width = ReadInt(chunkData, 0);
                         height = ReadInt(chunkData, 4);
                         bitDepth = chunkData[8];
@@ -91,11 +82,11 @@ namespace ImageDotNet
                         scanline = new byte[width * bytesPerPixel];
                         break;
 
-                    case ChunkType.PLTE:
+                    case PngHelper.ChunkType.PLTE:
 
                         break;
 
-                    case ChunkType.IDAT:
+                    case PngHelper.ChunkType.IDAT:
                         using (MemoryStream chunkDataStream = new MemoryStream(chunkData))
                         {
                             // Read past the first two bytes of the zlib header
@@ -127,11 +118,11 @@ namespace ImageDotNet
 
             if (bytesPerPixel == 3)
             {
-                return new RgbImage(width, height, pixels);
+                return new Image<Rgb>(width, height, PixelHelper.To<Rgb>(pixels));
             }
             else
             {
-                return new RgbaImage(width, height, pixels);
+                return new Image<Rgba>(width, height, PixelHelper.To<Rgba>(pixels));
             }
         }
 
@@ -140,29 +131,29 @@ namespace ImageDotNet
             return (data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3];
         }
 
-        private static ChunkType ReadChunkType(byte[] data, int offset)
+        private static PngHelper.ChunkType ReadChunkType(byte[] data, int offset)
         {
             if (data[offset] == 'I')
             {
                 if (data[offset + 1] == 'D' && data[offset + 2] == 'A' && data[offset + 3] == 'T')
                 {
-                    return ChunkType.IDAT;
+                    return PngHelper.ChunkType.IDAT;
                 }
                 else if (data[offset + 1] == 'E' && data[offset + 2] == 'N' && data[offset + 3] == 'D')
                 {
-                    return ChunkType.IEND;
+                    return PngHelper.ChunkType.IEND;
                 }
                 else if (data[offset + 1] == 'H' && data[offset + 2] == 'D' && data[offset + 3] == 'R')
                 {
-                    return ChunkType.IHDR;
+                    return PngHelper.ChunkType.IHDR;
                 }
             }
             else if (data[offset] == 'P' && data[offset + 1] == 'L' && data[offset + 2] == 'T' && data[offset + 3] == 'E')
             {
-                return ChunkType.PLTE;
+                return PngHelper.ChunkType.PLTE;
             }
 
-            return ChunkType.Other;
+            return PngHelper.ChunkType.Other;
         }
 
         public void SavePng(string fileName)
@@ -173,10 +164,15 @@ namespace ImageDotNet
             }
         }
 
-        public void SavePng(Stream stream)
+        public abstract void SavePng(Stream stream);
+    }
+
+    public sealed partial class Image<T>
+    {  
+        public override void SavePng(Stream stream)
         {
             BinaryWriter bw = new BinaryWriter(stream);
-            bw.Write(HeaderBytes);
+            bw.Write(PngHelper.HeaderBytes);
 
             byte[] ihdr = new byte[13];
             WriteInt(ihdr, 0, (uint)Width);
@@ -193,7 +189,8 @@ namespace ImageDotNet
 
             byte[] idat = null;
 
-            using (var ms = new MemoryStream(_pixels.Length + 2)) // Add 2 bytes for zlib header
+            var pixels = PixelHelper.ToByteArray(_pixels);
+            using (var ms = new MemoryStream(pixels.Length + 2)) // Add 2 bytes for zlib header
             {
                 ms.WriteByte(24);
                 ms.WriteByte(87);
@@ -205,7 +202,7 @@ namespace ImageDotNet
                         for (int x = 0; x < Width; x++)
                         {
                             for (int i = 0; i < BytesPerPixel; i++)
-                                scanline[(x * BytesPerPixel) + i + 1] = _pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
+                                scanline[(x * BytesPerPixel) + i + 1] = pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
                         }
 
                         deflate.Write(scanline, 0, scanline.Length);

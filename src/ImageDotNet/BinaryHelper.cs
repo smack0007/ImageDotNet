@@ -1,6 +1,3 @@
-using System.IO;
-using System.Runtime.InteropServices;
-
 namespace ImageDotNet
 {
     internal static class BinaryHelper

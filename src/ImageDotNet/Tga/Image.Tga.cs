@@ -118,11 +118,11 @@ namespace ImageDotNet
 
             if (bytesPerPixel == 3)
             {
-                return new RgbImage(width, height, pixels);
+                return new Image<Rgb>(width, height, PixelHelper.To<Rgb>(pixels));
             }
             else
             {
-                return new RgbaImage(width, height, pixels);
+                return new Image<Rgba>(width, height, PixelHelper.To<Rgba>(pixels));
             }
         }
 
@@ -158,19 +158,19 @@ namespace ImageDotNet
                     if (this.BytesPerPixel >= 3)
                     {
                         // We have to flip RGB to BGR and flip bottom and top
-                        pixels[top] = this[bottom + 2];
-                        pixels[top + 1] = this[bottom + 1];
-                        pixels[top + 2] = this[bottom];
+                        //pixels[top] = this[bottom + 2];
+                        //pixels[top + 1] = this[bottom + 1];
+                        //pixels[top + 2] = this[bottom];
 
-                        pixels[bottom] = this[top + 2];
-                        pixels[bottom + 1] = this[top + 1];
-                        pixels[bottom + 2] = this[top];
+                        //pixels[bottom] = this[top + 2];
+                        //pixels[bottom + 1] = this[top + 1];
+                        //pixels[bottom + 2] = this[top];
 
-                        if (this.BytesPerPixel == 4)
-                        {
-                            pixels[top + 3] = this[bottom + 3];
-                            pixels[bottom + 3] = this[top + 3];
-                        }
+                        //if (this.BytesPerPixel == 4)
+                        //{
+                        //    pixels[top + 3] = this[bottom + 3];
+                        //    pixels[bottom + 3] = this[top + 3];
+                        //}
                     }
                 }
             }
@@ -184,12 +184,12 @@ namespace ImageDotNet
 
                     if (this.BytesPerPixel >= 3)
                     {
-                        pixels[middle] = this[middle + 2];
-                        pixels[middle + 1] = this[middle + 1];
-                        pixels[middle + 2] = this[middle];
+                        //pixels[middle] = this[middle + 2];
+                        //pixels[middle + 1] = this[middle + 1];
+                        //pixels[middle + 2] = this[middle];
 
-                        if (this.BytesPerPixel == 4)
-                            pixels[middle + 3] = this[middle + 3];
+                        //if (this.BytesPerPixel == 4)
+                        //    pixels[middle + 3] = this[middle + 3];
                     }
                 }
             }

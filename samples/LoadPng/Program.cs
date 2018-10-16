@@ -21,18 +21,11 @@ namespace LoadPng
 
                 Image image = Image.LoadPng(Path.Combine(basePath, fileName));
 
-                Console.WriteLine(image.GetType().Name);
+                Console.WriteLine(image.PixelType.Name);
 
-                for (int i = 0; i < image.Length; i += image.BytesPerPixel)
-                {
-                    for (int j = 0; j < image.BytesPerPixel; j++)
-                    {
-                        Console.Write("{0:000} ", image[i + j]);
-                    }
-
-                    Console.WriteLine();
-                }
-
+                foreach (var pixel in image)
+                    Console.WriteLine(pixel);
+                
                 Console.WriteLine();
             }
 

@@ -26,15 +26,15 @@ namespace ImageDotNet.Demo
 
                 Console.WriteLine(image.GetType().Name);
 
-                for (int i = 0; i < image.Length; i += image.BytesPerPixel)
-                {
-                    for (int j = 0; j < image.BytesPerPixel; j++)
-                    {
-                        Console.Write("{0:000} ", image[i + j]);
-                    }
+                //for (int i = 0; i < image.Length; i += image.BytesPerPixel)
+                //{
+                //    for (int j = 0; j < image.BytesPerPixel; j++)
+                //    {
+                //        Console.Write("{0:000} ", image[i + j]);
+                //    }
 
-                    Console.WriteLine();
-                }
+                //    Console.WriteLine();
+                //}
 
                 Console.WriteLine();
             }
