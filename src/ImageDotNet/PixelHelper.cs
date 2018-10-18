@@ -6,7 +6,7 @@ namespace ImageDotNet
     public static class PixelHelper
     {
         public unsafe static byte[] ToByteArray<T>(T[] pixels)
-            where T: unmanaged
+            where T: unmanaged, IPixel
         {
             int pixelSize = Marshal.SizeOf<T>();
 
@@ -22,8 +22,8 @@ namespace ImageDotNet
             return buffer;
         }
 
-        public unsafe static T[] To<T>(byte[] pixels)
-            where T: unmanaged
+        public unsafe static T[] ToPixelArray<T>(byte[] pixels)
+            where T: unmanaged, IPixel
         {
             var pixelSize = Marshal.SizeOf<T>();
 

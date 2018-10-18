@@ -3,9 +3,9 @@ using ImageDotNet.Tga;
 
 namespace ImageDotNet
 {
-    public abstract partial class Image
+    public static partial class Image
     {
-        public static Image LoadTga(string fileName)
+        public static IImage LoadTga(string fileName)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
@@ -13,7 +13,7 @@ namespace ImageDotNet
             }
         }
 
-        public static Image LoadTga(Stream stream)
+        public static IImage LoadTga(Stream stream)
         {
             BinaryReader br = new BinaryReader(stream);
             
@@ -118,21 +118,24 @@ namespace ImageDotNet
 
             if (bytesPerPixel == 3)
             {
-                return new Image<Rgb>(width, height, PixelHelper.To<Rgb>(pixels));
+                return new Image<Rgb24>(width, height, PixelHelper.ToPixelArray<Rgb24>(pixels));
             }
             else
             {
-                return new Image<Rgba>(width, height, PixelHelper.To<Rgba>(pixels));
+                return new Image<Rgba32>(width, height, PixelHelper.ToPixelArray<Rgba32>(pixels));
             }
         }
+    }
 
+    public partial class Image<T>
+    {
         public void SaveTga(string fileName, TgaDataType dataType = TgaDataType.UncompressedTrueColor)
         {
             using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 this.SaveTga(file, dataType);
             }
-        } 
+        }
 
         public void SaveTga(Stream stream, TgaDataType dataType = TgaDataType.UncompressedTrueColor)
         {

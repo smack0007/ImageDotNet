@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace ImageDotNet
 {
-    public sealed partial class Image<T> : Image, IEnumerable<T>
+    public sealed partial class Image<T> : IImage
         where T : unmanaged, IPixel
     {
         private readonly T[] _pixels;
 
-        public override Type PixelType => typeof(T);
+        public Type PixelType => typeof(T);
 
-        public override int Width { get; }
+        public int Width { get; }
 
-        public override int Height { get; }
+        public int Height { get; }
 
-        public override int BytesPerPixel { get; }
+        public int BytesPerPixel => Marshal.SizeOf<T>();
 
-        public override int Length => _pixels.Length;
+        public int Length => _pixels.Length;
 
         public ref T this[int index] => ref _pixels[index];
 
@@ -28,24 +25,49 @@ namespace ImageDotNet
         {
             Width = width;
             Height = height;
-            BytesPerPixel = Marshal.SizeOf<T>();
 
             _pixels = pixels;
 
             if (this._pixels.Length != Width * Height)
                 throw new ImageDotNetException($"The format of the pixels is incorrect. The length of the pixels array should be {Width * Height} but was {_pixels.Length}");
         }
-
-        public override IEnumerator<IPixel> GetEnumerator() => _pixels.Cast<IPixel>().GetEnumerator();
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() => ((IEnumerable<T>)_pixels).GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => _pixels.GetEnumerator();
-
+        
         public ImageDataPointer GetDataPointer()
         {
             var handle = GCHandle.Alloc(this._pixels, GCHandleType.Pinned);
             return new ImageDataPointer(handle, this.Length);
+        }
+
+        public void ForEachPixel(Action<T> action)
+        {
+            Guard.NotNull(action, nameof(action));
+
+            foreach (var pixel in _pixels)
+                action(pixel);
+        }
+
+        void IImage.ForEachPixel(Action<IPixel> action)
+        {
+            Guard.NotNull(action, nameof(action));
+
+            foreach (var pixel in _pixels)
+                action(pixel);
+        }
+
+        public Image<Rgb24> ToRgb24()
+        {
+            if (typeof(T) == typeof(Rgb24))
+                return this as Image<Rgb24>;
+
+            throw new NotImplementedException($"{nameof(Rgb24)} conversion not yet implemented.");
+        }
+
+        public Image<Rgba32> ToRgba32()
+        {
+            if (typeof(T) == typeof(Rgba32))
+                return this as Image<Rgba32>;
+
+            throw new NotImplementedException($"{nameof(Rgba32)} conversion not yet implemented.");
         }
     }
 }

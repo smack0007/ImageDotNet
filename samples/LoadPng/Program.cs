@@ -19,18 +19,17 @@ namespace LoadPng
             {
                 Console.WriteLine("{0}:", fileName);
 
-                Image image = Image.LoadPng(Path.Combine(basePath, fileName));
+                var image = Image.LoadPng(Path.Combine(basePath, fileName)).ToRgba32();
 
                 Console.WriteLine(image.PixelType.Name);
 
-                foreach (var pixel in image)
-                    Console.WriteLine(pixel);
+                image.ForEachPixel(x => Console.WriteLine(x));
                 
                 Console.WriteLine();
             }
 
-            Image image2 = Image.LoadPng(Path.Combine(basePath, fileNames[0]));
-            image2.SavePng(Path.Combine(basePath, "output.png"));
+            var image2 = Image.LoadPng(Path.Combine(basePath, fileNames[0]));
+            //image2.SavePng(Path.Combine(basePath, "output.png"));
         }
     }
 }

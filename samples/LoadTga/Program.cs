@@ -22,24 +22,16 @@ namespace ImageDotNet.Demo
             {
                 Console.WriteLine("{0}:", fileName);
 
-                Image image = Image.LoadTga(Path.Combine(basePath, fileName));
+                var image = Image.LoadTga(Path.Combine(basePath, fileName));
 
-                Console.WriteLine(image.GetType().Name);
+                Console.WriteLine(image.PixelType.Name);
 
-                //for (int i = 0; i < image.Length; i += image.BytesPerPixel)
-                //{
-                //    for (int j = 0; j < image.BytesPerPixel; j++)
-                //    {
-                //        Console.Write("{0:000} ", image[i + j]);
-                //    }
-
-                //    Console.WriteLine();
-                //}
+                image.ForEachPixel(x => Console.WriteLine(x));
 
                 Console.WriteLine();
             }
 
-            Image image2 = Image.LoadTga(Path.Combine(basePath, fileNames[0]));
+            var image2 = Image.LoadTga(Path.Combine(basePath, fileNames[0]));
             image2.SaveTga(Path.Combine(basePath, "output.tga"));
         }
     }

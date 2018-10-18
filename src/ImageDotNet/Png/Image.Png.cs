@@ -6,9 +6,9 @@ using ImageDotNet.Png;
 
 namespace ImageDotNet
 {
-    public abstract partial class Image
+    public static partial class Image
     {
-        public static Image LoadPng(string fileName)
+        public static IImage LoadPng(string fileName)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
@@ -16,7 +16,7 @@ namespace ImageDotNet
             }
         }
 
-        public static Image LoadPng(Stream stream)
+        public static IImage LoadPng(Stream stream)
         {
             var header = new byte[PngHelper.HeaderBytes.Length];
             stream.Read(header, 0, header.Length);
@@ -118,11 +118,11 @@ namespace ImageDotNet
 
             if (bytesPerPixel == 3)
             {
-                return new Image<Rgb>(width, height, PixelHelper.To<Rgb>(pixels));
+                return new Image<Rgb24>(width, height, PixelHelper.ToPixelArray<Rgb24>(pixels));
             }
             else
             {
-                return new Image<Rgba>(width, height, PixelHelper.To<Rgba>(pixels));
+                return new Image<Rgba32>(width, height, PixelHelper.ToPixelArray<Rgba32>(pixels));
             }
         }
 
@@ -154,8 +154,11 @@ namespace ImageDotNet
             }
 
             return PngHelper.ChunkType.Other;
-        }
+        }        
+    }
 
+    public sealed partial class Image<T>
+    {
         public void SavePng(string fileName)
         {
             using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
@@ -164,12 +167,7 @@ namespace ImageDotNet
             }
         }
 
-        public abstract void SavePng(Stream stream);
-    }
-
-    public sealed partial class Image<T>
-    {  
-        public override void SavePng(Stream stream)
+        public void SavePng(Stream stream)
         {
             BinaryWriter bw = new BinaryWriter(stream);
             bw.Write(PngHelper.HeaderBytes);
