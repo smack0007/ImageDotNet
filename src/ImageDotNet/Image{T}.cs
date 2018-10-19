@@ -54,20 +54,13 @@ namespace ImageDotNet
                 action(pixel);
         }
 
-        public Image<Rgb24> ToRgb24()
+        public Image<U> To<U>()
+            where U: unmanaged, IPixel
         {
-            if (typeof(T) == typeof(Rgb24))
-                return this as Image<Rgb24>;
+            if (typeof(U) == typeof(T))
+                return this as Image<U>;
 
-            throw new NotImplementedException($"{nameof(Rgb24)} conversion not yet implemented.");
-        }
-
-        public Image<Rgba32> ToRgba32()
-        {
-            if (typeof(T) == typeof(Rgba32))
-                return this as Image<Rgba32>;
-
-            throw new NotImplementedException($"{nameof(Rgba32)} conversion not yet implemented.");
+            return new Image<U>(Width, Height, PixelHelper.Convert<T, U>(_pixels));
         }
     }
 }

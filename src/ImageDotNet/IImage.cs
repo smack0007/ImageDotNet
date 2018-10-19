@@ -18,8 +18,6 @@ namespace ImageDotNet
 
         void ForEachPixel(Action<IPixel> action);
 
-        Image<Rgb24> ToRgb24();
-
-        Image<Rgba32> ToRgba32();
+        Image<T> To<T>() where T : unmanaged, IPixel;
     }
 }

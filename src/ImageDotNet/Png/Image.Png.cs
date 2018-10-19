@@ -112,7 +112,7 @@ namespace ImageDotNet
                 var chunkCrc = new byte[4];
                 stream.Read(chunkCrc, 0, 4);
 
-                uint crc = BinaryHelper.ReadBigEndianUInt32(chunkCrc, 0);
+                var crc = BinaryHelper.ReadBigEndianUInt32(chunkCrc, 0);
             }
 
             if (bytesPerPixel == 3)

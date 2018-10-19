@@ -74,7 +74,7 @@ namespace ImageDotNet
             
             for (int i = 0; i < newPixels.Length; i++)
             {
-
+                throw new NotImplementedException($"Conversion from {nameof(T)} to {nameof(U)} not yet implemented.");
             }
 
             return newPixels;
