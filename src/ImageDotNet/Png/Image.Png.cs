@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Runtime.CompilerServices;
-using ImageDotNet.PixelFormats;
 using ImageDotNet.Png;
 
 namespace ImageDotNet

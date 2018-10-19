@@ -1,5 +1,4 @@
 using System.IO;
-using ImageDotNet.PixelFormats;
 using ImageDotNet.Tga;
 
 namespace ImageDotNet
@@ -17,7 +16,7 @@ namespace ImageDotNet
         public static IImage LoadTga(Stream stream)
         {
             BinaryReader br = new BinaryReader(stream);
-            
+
             var header = br.ReadBytes(TgaHeader.SizeInBytes);
 
             var dataType = (TgaDataType)header[TgaHeader.DataTypeCode];
@@ -50,7 +49,7 @@ namespace ImageDotNet
 
                     if ((nextByte & 0x80) != 0) // Check high bit
                     {
-                        nextByte -= 127; 
+                        nextByte -= 127;
                         byte[] bytes = br.ReadBytes(bytesPerPixel);
 
                         for (int i = 0; i < nextByte; i++)
@@ -84,46 +83,22 @@ namespace ImageDotNet
                     int top = ((y * width) + x) * bytesPerPixel;
                     int bottom = (((height - 1 - y) * width) + x) * bytesPerPixel;
 
-                    // Change BGR => RGB 
-                    byte temp = pixels[top];
-                    pixels[top] = pixels[top + 2];
-                    pixels[top + 2] = temp;
-
-                    // Change BGR => RGB 
-                    temp = pixels[bottom];
-                    pixels[bottom] = pixels[bottom + 2];
-                    pixels[bottom + 2] = temp;
-
                     for (int i = 0; i < bytesPerPixel; i++)
                     {
-                        temp = pixels[top + i];
+                        byte temp = pixels[top + i];
                         pixels[top + i] = pixels[bottom + i];
                         pixels[bottom + i] = temp;
                     }
                 }
             }
 
-            // If we have an odd number of lines, we need to flip BGR => RGB on
-            // the middle line.
-            if (height % 2 == 1)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    int middle = (((height / 2) * width) + x) * bytesPerPixel;
-
-                    byte temp = pixels[middle];
-                    pixels[middle] = pixels[middle + 2];
-                    pixels[middle + 2] = temp;
-                }
-            }
-
             if (bytesPerPixel == 3)
             {
-                return new Image<Rgb24>(width, height, PixelHelper.ToPixelArray<Rgb24>(pixels));
+                return new Image<Bgr24>(width, height, PixelHelper.ToPixelArray<Bgr24>(pixels));
             }
             else
             {
-                return new Image<Rgba32>(width, height, PixelHelper.ToPixelArray<Rgba32>(pixels));
+                return new Image<Bgra32>(width, height, PixelHelper.ToPixelArray<Bgra32>(pixels));
             }
         }
     }
@@ -134,7 +109,7 @@ namespace ImageDotNet
         {
             using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
-                this.SaveTga(file, dataType);
+                SaveTga(file, dataType);
             }
         }
 
@@ -144,58 +119,26 @@ namespace ImageDotNet
 
             var header = new byte[TgaHeader.SizeInBytes];
             header[TgaHeader.DataTypeCode] = (byte)dataType;
-            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Width, (ushort)this.Width);
-            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Height, (ushort)this.Height);
-            header[TgaHeader.BitsPerPixel] = (byte)(this.BytesPerPixel * 8);
+            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Width, (ushort)Width);
+            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Height, (ushort)Height);
+            header[TgaHeader.BitsPerPixel] = (byte)(BytesPerPixel * 8);
 
             bw.Write(header);
 
-            byte[] pixels = new byte[this.Width * this.Height * this.BytesPerPixel];
-
-            for (int y = 0; y < this.Height / 2; y++)
+            byte[] pixels = null;
+            if (BytesPerPixel == 3)
             {
-                for (int x = 0; x < this.Width; x++)
-                {
-                    int top = ((y * this.Width) + x) * this.BytesPerPixel;
-                    int bottom = (((this.Height - 1 - y) * this.Width) + x) * this.BytesPerPixel;
-
-                    if (this.BytesPerPixel >= 3)
-                    {
-                        // We have to flip RGB to BGR and flip bottom and top
-                        //pixels[top] = this[bottom + 2];
-                        //pixels[top + 1] = this[bottom + 1];
-                        //pixels[top + 2] = this[bottom];
-
-                        //pixels[bottom] = this[top + 2];
-                        //pixels[bottom + 1] = this[top + 1];
-                        //pixels[bottom + 2] = this[top];
-
-                        //if (this.BytesPerPixel == 4)
-                        //{
-                        //    pixels[top + 3] = this[bottom + 3];
-                        //    pixels[bottom + 3] = this[top + 3];
-                        //}
-                    }
-                }
+                pixels = PixelHelper.Clone(_pixels)
+                    .Convert<T, Bgr24>()
+                    .FlipVertically(Width, Height)
+                    .ToByteArray();
             }
-
-            // If we have an odd number of lines, we need to copy the middle line.
-            if (this.Height % 2 == 1)
+            else if (BytesPerPixel == 4)
             {
-                for (int x = 0; x < this.Width; x++)
-                {
-                    int middle = (((this.Height / 2) * this.Width) + x) * this.BytesPerPixel;
-
-                    if (this.BytesPerPixel >= 3)
-                    {
-                        //pixels[middle] = this[middle + 2];
-                        //pixels[middle + 1] = this[middle + 1];
-                        //pixels[middle + 2] = this[middle];
-
-                        //if (this.BytesPerPixel == 4)
-                        //    pixels[middle + 3] = this[middle + 3];
-                    }
-                }
+                pixels = PixelHelper.Clone(_pixels)
+                    .Convert<T, Bgra32>()
+                    .FlipVertically(Width, Height)
+                    .ToByteArray();
             }
 
             bw.Write(pixels);

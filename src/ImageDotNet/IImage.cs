@@ -1,5 +1,4 @@
 ﻿using System;
-using ImageDotNet.PixelFormats;
 
 namespace ImageDotNet
 {

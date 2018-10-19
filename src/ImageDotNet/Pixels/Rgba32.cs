@@ -1,9 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
-namespace ImageDotNet.PixelFormats
+namespace ImageDotNet
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct Rgba32 : IPixel
+    public struct Rgba32 : IPixel, IEquatable<Rgba32>
     {
         public static readonly PixelFormat PixelFormat = PixelFormat.Rgba32;
 
@@ -15,6 +16,14 @@ namespace ImageDotNet.PixelFormats
 
         public byte A;
 
+        public Rgba32(byte r, byte g, byte b, byte a)
+        {
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
+
         public override string ToString() => $"{R:000} {G:000} {B:000} {A:000}";
 
         public void ReadFrom(byte[] buffer, int offset)
@@ -23,6 +32,14 @@ namespace ImageDotNet.PixelFormats
             G = buffer[offset + 1];
             B = buffer[offset + 2];
             A = buffer[offset + 3];
+        }
+
+        public bool Equals(Rgba32 other)
+        {
+            return R == other.R &&
+                   G == other.G &&
+                   B == other.B &&
+                   A == other.A;
         }
     }
 }

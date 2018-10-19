@@ -6,75 +6,61 @@ namespace ImageDotNet.Tests
 {
     public class TgaTests
     {
-        private readonly ITestOutputHelper output;
+        private readonly ITestOutputHelper _output;
 
         public TgaTests(ITestOutputHelper output)
         {
-            this.output = output;
+            _output = output;
         }
 
-        private static readonly byte[] ImageData1x1 = new byte[]
+        private static readonly Bgra32[] ImageData1x1 = new Bgra32[]
         {
-            1, 2, 3, 4
+            new Bgra32(1, 2, 3, 4),
         };
 
-        private static readonly byte[] ImageData2x2 = new byte[]
+        private static readonly Bgra32[] ImageData2x2 = new Bgra32[]
         {
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+            new Bgra32(1, 2, 3, 4), new Bgra32(5, 6, 7, 8),
+            new Bgra32(9, 10, 11, 12), new Bgra32(13, 14, 15, 16),
         };
 
-        private static readonly byte[] ImageData3x3 = new byte[]
+        private static readonly Bgra32[] ImageData3x3 = new Bgra32[]
         {
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
+            new Bgra32(1, 2, 3, 4), new Bgra32(5, 6, 7, 8), new Bgra32(9, 10, 11, 12),
+            new Bgra32(13, 14, 15, 16), new Bgra32(17, 18, 19, 20), new Bgra32(21, 22, 23, 24),
+            new Bgra32(25, 26, 27, 28), new Bgra32(29, 30, 31, 32), new Bgra32(33, 34, 35, 36),
         };
 
-        //[Fact]
-        //public void AfterSaveAndLoadPixelsAreTheSame1x1Image()
-        //{
-        //    var image = new RgbaImage(1, 1, ImageData1x1);
-        //    Image otherImage = null;
+        private static void AssertSaveAndLoad(Image<Bgra32> expected)
+        {
+            Image<Bgra32> actual = null;
 
-        //    using (var memory = new MemoryStream())
-        //    {
-        //        image.SaveTga(memory);
-        //        memory.Position = 0;
-        //        otherImage = Image.LoadTga(memory);
-        //    }
+            using (var memory = new MemoryStream())
+            {
+                expected.SaveTga(memory);
+                memory.Position = 0;
+                actual = (Image<Bgra32>)Image.LoadTga(memory);
+            }
 
-        //    Assert.Equal(image, otherImage);
-        //}
+            AssertEx.Equal(expected, actual);
+        }
 
-        //[Fact]
-        //public void AfterSaveAndLoadPixelsAreTheSame2x2Image()
-        //{
-        //    var image = new RgbaImage(2, 2, ImageData2x2);
-        //    Image otherImage = null;
+        [Fact]
+        public void AfterSaveAndLoadPixelsAreTheSame1x1Image()
+        {
+            AssertSaveAndLoad(new Image<Bgra32>(1, 1, ImageData1x1));
+        }
 
-        //    using (var memory = new MemoryStream())
-        //    {
-        //        image.SaveTga(memory);
-        //        memory.Position = 0;
-        //        otherImage = Image.LoadTga(memory);
-        //    }
+        [Fact]
+        public void AfterSaveAndLoadPixelsAreTheSame2x2Image()
+        {
+            AssertSaveAndLoad(new Image<Bgra32>(2, 2, ImageData2x2));
+        }
 
-        //    Assert.Equal(image, otherImage);
-        //}
-
-        //[Fact]
-        //public void AfterSaveAndLoadPixelsAreTheSame3x3Image()
-        //{
-        //    var image = new RgbaImage(3, 3, ImageData3x3);
-        //    Image otherImage = null;
-
-        //    using (var memory = new MemoryStream())
-        //    {
-        //        image.SaveTga(memory);
-        //        memory.Position = 0;
-        //        otherImage = Image.LoadTga(memory);
-        //    }
-
-        //    Assert.Equal(image, otherImage);
-        //}
+        [Fact]
+        public void AfterSaveAndLoadPixelsAreTheSame3x3Image()
+        {
+            AssertSaveAndLoad(new Image<Bgra32>(3, 3, ImageData3x3));
+        }
     }
 }
