@@ -75,22 +75,7 @@ namespace ImageDotNet
                 }
             }
 
-            // Half height because we have to flip the image.
-            for (int y = 0; y < height / 2; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    int top = ((y * width) + x) * bytesPerPixel;
-                    int bottom = (((height - 1 - y) * width) + x) * bytesPerPixel;
-
-                    for (int i = 0; i < bytesPerPixel; i++)
-                    {
-                        byte temp = pixels[top + i];
-                        pixels[top + i] = pixels[bottom + i];
-                        pixels[bottom + i] = temp;
-                    }
-                }
-            }
+            pixels = pixels.FlipVertically(width, height, bytesPerPixel);
 
             if (bytesPerPixel == 3)
             {

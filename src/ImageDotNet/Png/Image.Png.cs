@@ -26,8 +26,8 @@ namespace ImageDotNet
                     throw new ImageDotNetException("PNG header incorrect.");
             }
 
-            int width = 0;
-            int height = 0;
+            uint width = 0;
+            uint height = 0;
             byte bitDepth = 0;
             byte colorType = 0;
             byte compressionMethod = 0;
@@ -44,7 +44,7 @@ namespace ImageDotNet
                 var chunkHeader = new byte[8];
                 stream.Read(chunkHeader, 0, chunkHeader.Length);
 
-                var chunkSize = ReadInt(chunkHeader, 0);
+                var chunkSize = BinaryHelper.ReadBigEndianUInt32(chunkHeader, 0);
                 var chunkType = ReadChunkType(chunkHeader, 4);
 
                 if (chunkType == PngHelper.ChunkType.IEND)
@@ -53,13 +53,13 @@ namespace ImageDotNet
                 }
 
                 var chunkData = new byte[chunkSize];
-                stream.Read(chunkData, 0, chunkSize);
+                stream.Read(chunkData, 0, (int)chunkSize);
 
                 switch (chunkType)
                 {
                     case PngHelper.ChunkType.IHDR:
-                        width = ReadInt(chunkData, 0);
-                        height = ReadInt(chunkData, 4);
+                        width = BinaryHelper.ReadBigEndianUInt32(chunkData, 0);
+                        height = BinaryHelper.ReadBigEndianUInt32(chunkData, 4);
                         bitDepth = chunkData[8];
                         colorType = chunkData[9];
                         compressionMethod = chunkData[10];
@@ -112,22 +112,17 @@ namespace ImageDotNet
                 var chunkCrc = new byte[4];
                 stream.Read(chunkCrc, 0, 4);
 
-                int crc = ReadInt(chunkCrc, 0);
+                uint crc = BinaryHelper.ReadBigEndianUInt32(chunkCrc, 0);
             }
 
             if (bytesPerPixel == 3)
             {
-                return new Image<Rgb24>(width, height, PixelHelper.ToPixelArray<Rgb24>(pixels));
+                return new Image<Rgb24>((int)width, (int)height, PixelHelper.ToPixelArray<Rgb24>(pixels));
             }
             else
             {
-                return new Image<Rgba32>(width, height, PixelHelper.ToPixelArray<Rgba32>(pixels));
+                return new Image<Rgba32>((int)width, (int)height, PixelHelper.ToPixelArray<Rgba32>(pixels));
             }
-        }
-
-        private static int ReadInt(byte[] data, int offset)
-        {
-            return (data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3];
         }
 
         private static PngHelper.ChunkType ReadChunkType(byte[] data, int offset)
@@ -172,8 +167,8 @@ namespace ImageDotNet
             bw.Write(PngHelper.HeaderBytes);
 
             byte[] ihdr = new byte[13];
-            WriteInt(ihdr, 0, (uint)Width);
-            WriteInt(ihdr, 4, (uint)Height);
+            BinaryHelper.WriteBigEndianUInt32(ihdr, 0, (uint)Width);
+            BinaryHelper.WriteBigEndianUInt32(ihdr, 4, (uint)Height);
             ihdr[8] = 8; // bitDepth
             ihdr[9] = GetColorType();
             ihdr[10] = 0; // compressionMethod
@@ -229,18 +224,10 @@ namespace ImageDotNet
             }
         }
 
-        private static void WriteInt(byte[] buffer, int offset, uint value)
-        {
-            buffer[offset] = (byte)(value & (0xFF << 24));
-            buffer[offset + 1] = (byte)(value & (0xFF << 16));
-            buffer[offset + 2] = (byte)(value & (0xFF << 8));
-            buffer[offset + 3] = (byte)(value & (0xFF));
-        }
-
         private static void WriteChunk(BinaryWriter bw, string chunkType, byte[] chunkData)
         {
             var chunkHeader = new byte[8];
-            WriteInt(chunkHeader, 0, (uint)chunkData.Length);
+            BinaryHelper.WriteBigEndianUInt32(chunkHeader, 0, (uint)chunkData.Length);
 
             for (int i = 0; i < chunkType.Length; i++)
                 chunkHeader[i + 4] = (byte)chunkType[i];
@@ -253,7 +240,7 @@ namespace ImageDotNet
             crc = CalculateCrc(chunkData, 0, chunkData.Length, crc);
 
             byte[] chunkCrc = new byte[4];
-            WriteInt(chunkCrc, 0, crc);
+            BinaryHelper.WriteBigEndianUInt32(chunkCrc, 0, crc);
 
             bw.Write(chunkCrc);
         }

@@ -80,6 +80,29 @@ namespace ImageDotNet
             return newPixels;
         }
 
+        internal static byte[] FlipVertically(this byte[] pixels, int width, int height, int bytesPerPixel)
+        {
+            Guard.NotNull(pixels, nameof(pixels));
+
+            for (int y = 0; y < height / 2; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int top = ((y * width) + x) * bytesPerPixel;
+                    int bottom = (((height - 1 - y) * width) + x) * bytesPerPixel;
+
+                    for (int i = 0; i < bytesPerPixel; i++)
+                    {
+                        byte temp = pixels[top + i];
+                        pixels[top + i] = pixels[bottom + i];
+                        pixels[bottom + i] = temp;
+                    }
+                }
+            }
+
+            return pixels;
+        }
+
         internal static T[] FlipVertically<T>(this T[] pixels, int width, int height)
             where T: struct, IPixel
         {
