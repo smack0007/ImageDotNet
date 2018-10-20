@@ -17,16 +17,16 @@ namespace ImageDotNet
         {
             BinaryReader br = new BinaryReader(stream);
 
-            var header = br.ReadBytes(TgaHeader.SizeInBytes);
+            var header = br.ReadBytes(TgaHelper.HeaderOffsets.SizeInBytes);
 
-            var dataType = (TgaDataType)header[TgaHeader.DataTypeCode];
+            var dataType = (TgaDataType)header[TgaHelper.HeaderOffsets.DataTypeCode];
 
             if (dataType != TgaDataType.UncompressedTrueColor && dataType != TgaDataType.RunLengthEncodedTrueColor)
                 throw new ImageDotNetException($"Only {nameof(TgaDataType.UncompressedTrueColor)} and {nameof(TgaDataType.RunLengthEncodedTrueColor)} TGA images are supported.");
 
-            ushort width = BinaryHelper.ReadLittleEndianUInt16(header, TgaHeader.Width);
-            ushort height = BinaryHelper.ReadLittleEndianUInt16(header, TgaHeader.Height);
-            byte bytesPerPixel = (byte)(header[TgaHeader.BitsPerPixel] / 8);
+            ushort width = BinaryHelper.ReadLittleEndianUInt16(header, TgaHelper.HeaderOffsets.Width);
+            ushort height = BinaryHelper.ReadLittleEndianUInt16(header, TgaHelper.HeaderOffsets.Height);
+            byte bytesPerPixel = (byte)(header[TgaHelper.HeaderOffsets.BitsPerPixel] / 8);
 
             if (bytesPerPixel != 3 && bytesPerPixel != 4)
                 throw new ImageDotNetException("Only 24 and 32 bit TGA images are supported.");
@@ -102,11 +102,11 @@ namespace ImageDotNet
         {
             BinaryWriter bw = new BinaryWriter(stream);
 
-            var header = new byte[TgaHeader.SizeInBytes];
-            header[TgaHeader.DataTypeCode] = (byte)dataType;
-            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Width, (ushort)Width);
-            BinaryHelper.WriteLittleEndianUInt16(header, TgaHeader.Height, (ushort)Height);
-            header[TgaHeader.BitsPerPixel] = (byte)(BytesPerPixel * 8);
+            var header = new byte[TgaHelper.HeaderOffsets.SizeInBytes];
+            header[TgaHelper.HeaderOffsets.DataTypeCode] = (byte)dataType;
+            BinaryHelper.WriteLittleEndianUInt16(header, TgaHelper.HeaderOffsets.Width, (ushort)Width);
+            BinaryHelper.WriteLittleEndianUInt16(header, TgaHelper.HeaderOffsets.Height, (ushort)Height);
+            header[TgaHelper.HeaderOffsets.BitsPerPixel] = (byte)(BytesPerPixel * 8);
 
             bw.Write(header);
 
