@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ImageDotNet
+﻿namespace ImageDotNet
 {
     public interface IPixel
     {
-        void ReadFrom(byte[] buffer, int offset);
     }
 }

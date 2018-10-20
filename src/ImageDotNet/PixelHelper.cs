@@ -61,25 +61,6 @@ namespace ImageDotNet
             return buffer;
         }
 
-        internal static U[] Convert<T, U>(this T[] pixels)
-            where T: struct, IPixel
-            where U: struct, IPixel
-        {
-            Guard.NotNull(pixels, nameof(pixels));
-
-            if (typeof(T) == typeof(U))
-                return pixels as U[];
-
-            var newPixels = new U[pixels.Length];
-            
-            for (int i = 0; i < newPixels.Length; i++)
-            {
-                throw new NotImplementedException($"Conversion from {nameof(T)} to {nameof(U)} not yet implemented.");
-            }
-
-            return newPixels;
-        }
-
         internal static byte[] FlipVertically(this byte[] pixels, int width, int height, int bytesPerPixel)
         {
             Guard.NotNull(pixels, nameof(pixels));
@@ -122,6 +103,112 @@ namespace ImageDotNet
             }
 
             return pixels;
+        }
+
+        internal static unsafe U[] Convert<T, U>(this T[] source)
+            where T : unmanaged, IPixel
+            where U : unmanaged, IPixel
+        {
+            Guard.NotNull(source, nameof(source));
+
+            if (typeof(T) == typeof(U))
+                return source as U[];
+
+            var destination = new U[source.Length];
+
+            fixed (void* sourcePtr = source)
+            fixed (void* destinationPtr = destination)
+            {
+                Convert<T, U>((byte*)sourcePtr, (byte*)destinationPtr, source.Length);
+            }
+
+            return destination;
+        }
+
+        private static unsafe void ConvertBgr24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertBgr24ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int offset = i * Bgr24.SizeInBytes;
+                destinationPtr[offset] = sourcePtr[offset + 2];
+                destinationPtr[offset + 1] = sourcePtr[offset + 1];
+                destinationPtr[offset + 2] = sourcePtr[offset];
+            }
+        }
+
+        private static unsafe void ConvertBgr24ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertBgra32ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertBgra32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertBgra32ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int offset = i * Bgra32.SizeInBytes;
+                destinationPtr[offset] = sourcePtr[offset + 2];
+                destinationPtr[offset + 1] = sourcePtr[offset + 1];
+                destinationPtr[offset + 2] = sourcePtr[offset];
+                destinationPtr[offset + 3] = sourcePtr[offset + 3];
+            }
+        }
+
+        private static unsafe void ConvertRgb24ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int offset = i * Bgr24.SizeInBytes;
+                destinationPtr[offset] = sourcePtr[offset + 2];
+                destinationPtr[offset + 1] = sourcePtr[offset + 1];
+                destinationPtr[offset + 2] = sourcePtr[offset];
+            }
+        }
+
+        private static unsafe void ConvertRgb24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertRgb24ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertRgba32ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static unsafe void ConvertRgba32ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int offset = i * Bgra32.SizeInBytes;
+                destinationPtr[offset] = sourcePtr[offset + 2];
+                destinationPtr[offset + 1] = sourcePtr[offset + 1];
+                destinationPtr[offset + 2] = sourcePtr[offset];
+                destinationPtr[offset + 3] = sourcePtr[offset + 3];
+            }
+        }
+
+        private static unsafe void ConvertRgba32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            throw new NotImplementedException();
         }
     }
 }

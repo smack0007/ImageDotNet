@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 namespace ImageDotNet
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct Rgba32 : IPixel, IEquatable<Rgba32>
+    public partial struct Rgba32 : IPixel, IEquatable<Rgba32>
     {
-        public static readonly PixelFormat PixelFormat = PixelFormat.Rgba32;
+        public static readonly int SizeInBytes = Marshal.SizeOf<Rgba32>();
 
         public byte R;
 
@@ -25,14 +25,6 @@ namespace ImageDotNet
         }
 
         public override string ToString() => $"{R:000} {G:000} {B:000} {A:000}";
-
-        public void ReadFrom(byte[] buffer, int offset)
-        {
-            R = buffer[offset];
-            G = buffer[offset + 1];
-            B = buffer[offset + 2];
-            A = buffer[offset + 3];
-        }
 
         public bool Equals(Rgba32 other)
         {
