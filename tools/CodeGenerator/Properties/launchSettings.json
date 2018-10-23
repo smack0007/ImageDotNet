@@ -2,7 +2,7 @@
   "profiles": {
     "CodeGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "\"$(RepositoryRootDirectory)src\\ImageDotNet\""
+      "commandLineArgs": "\"$(RepositoryRootDirectory)\\\""
     }
   }
 }
