@@ -26,6 +26,10 @@ namespace ImageDotNet.Demo
 
                 Console.WriteLine(image.PixelType.Name);
 
+                image = image.To<Rgba32>();
+
+                Console.WriteLine(image.PixelType.Name);
+
                 image.ForEachPixel(x => Console.WriteLine(x));
 
                 Console.WriteLine();

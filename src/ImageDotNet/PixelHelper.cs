@@ -127,7 +127,14 @@ namespace ImageDotNet
 
         private static unsafe void ConvertBgr24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Bgr24.SizeInBytes;
+                int destinationOffset = i * Bgra32.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset + 2];
+            }
         }
 
         private static unsafe void ConvertBgr24ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
@@ -143,17 +150,38 @@ namespace ImageDotNet
 
         private static unsafe void ConvertBgr24ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Bgr24.SizeInBytes;
+                int destinationOffset = i * Rgba32.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset + 2];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
         }
 
         private static unsafe void ConvertBgra32ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Bgra32.SizeInBytes;
+                int destinationOffset = i * Bgr24.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset + 2];
+            }
         }
 
         private static unsafe void ConvertBgra32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Bgra32.SizeInBytes;
+                int destinationOffset = i * Rgb24.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset + 2];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
         }
 
         private static unsafe void ConvertBgra32ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
@@ -181,17 +209,38 @@ namespace ImageDotNet
 
         private static unsafe void ConvertRgb24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Rgb24.SizeInBytes;
+                int destinationOffset = i * Bgra32.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset + 2];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
         }
 
         private static unsafe void ConvertRgb24ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Rgb24.SizeInBytes;
+                int destinationOffset = i * Rgba32.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset + 2];
+            }
         }
 
         private static unsafe void ConvertRgba32ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Rgba32.SizeInBytes;
+                int destinationOffset = i * Bgr24.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset + 2];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
         }
 
         private static unsafe void ConvertRgba32ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
@@ -208,7 +257,14 @@ namespace ImageDotNet
 
         private static unsafe void ConvertRgba32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Rgba32.SizeInBytes;
+                int destinationOffset = i * Rgb24.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset + 2];
+            }
         }
     }
 }
