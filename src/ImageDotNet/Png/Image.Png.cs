@@ -181,9 +181,24 @@ namespace ImageDotNet
 
             byte[] idat = null;
 
-            var pixels = PixelHelper.ToByteArray(_pixels);
+            byte[] pixels = null;
+            if (BytesPerPixel == 3)
+            {
+                pixels = _pixels
+                    .Convert<T, Rgb24>()
+                    .ToByteArray();
+            }
+            else if (BytesPerPixel == 4)
+            {
+                pixels = _pixels
+                    .Convert<T, Rgba32>()
+                    .ToByteArray();
+            }
+
             using (var ms = new MemoryStream(pixels.Length + 2)) // Add 2 bytes for zlib header
             {
+                // Don't know if the zlib header has to be 24 and 87 but it
+                // seems to work.
                 ms.WriteByte(24);
                 ms.WriteByte(87);
 

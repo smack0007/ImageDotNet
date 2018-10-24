@@ -111,15 +111,20 @@ namespace ImageDotNet
         {
             Guard.NotNull(source, nameof(source));
 
-            if (typeof(T) == typeof(U))
-                return source as U[];
-
             var destination = new U[source.Length];
 
             fixed (void* sourcePtr = source)
             fixed (void* destinationPtr = destination)
             {
-                Convert<T, U>((byte*)sourcePtr, (byte*)destinationPtr, source.Length);
+                if (typeof(T) == typeof(U))
+                {
+                    var lengthInBytes = source.Length * Marshal.SizeOf<T>();
+                    Buffer.MemoryCopy(sourcePtr, destinationPtr, lengthInBytes, lengthInBytes);
+                }
+                else
+                {
+                    Convert<T, U>((byte*)sourcePtr, (byte*)destinationPtr, source.Length);
+                }
             }
 
             return destination;

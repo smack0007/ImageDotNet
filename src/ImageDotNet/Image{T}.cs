@@ -20,6 +20,8 @@ namespace ImageDotNet
 
         public ref T this[int index] => ref _pixels[index];
 
+        public ref T this[int x, int y] => ref _pixels[(y * Width) + x];
+
         public Image(int width, int height, T[] pixels)
             : base()
         {
@@ -57,9 +59,6 @@ namespace ImageDotNet
         public Image<U> To<U>()
             where U: unmanaged, IPixel
         {
-            if (typeof(U) == typeof(T))
-                return this as Image<U>;
-
             return new Image<U>(Width, Height, PixelHelper.Convert<T, U>(_pixels));
         }
     }

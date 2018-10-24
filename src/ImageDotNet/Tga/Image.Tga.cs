@@ -113,14 +113,14 @@ namespace ImageDotNet
             byte[] pixels = null;
             if (BytesPerPixel == 3)
             {
-                pixels = PixelHelper.Clone(_pixels)
+                pixels = _pixels
                     .Convert<T, Bgr24>()
                     .FlipVertically(Width, Height)
                     .ToByteArray();
             }
             else if (BytesPerPixel == 4)
             {
-                pixels = PixelHelper.Clone(_pixels)
+                pixels = _pixels
                     .Convert<T, Bgra32>()
                     .FlipVertically(Width, Height)
                     .ToByteArray();
