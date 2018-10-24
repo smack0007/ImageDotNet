@@ -6,7 +6,7 @@ namespace ImageDotNet
     public sealed partial class Image<T> : IImage
         where T : unmanaged, IPixel
     {
-        private readonly T[] _pixels;
+        private T[] _pixels;
 
         public Type PixelType => typeof(T);
 
@@ -36,8 +36,8 @@ namespace ImageDotNet
         
         public ImageDataPointer GetDataPointer()
         {
-            var handle = GCHandle.Alloc(this._pixels, GCHandleType.Pinned);
-            return new ImageDataPointer(handle, this.Length);
+            var handle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
+            return new ImageDataPointer(handle, Length);
         }
 
         public void ForEachPixel(Action<T> action)
@@ -57,9 +57,14 @@ namespace ImageDotNet
         }
 
         public Image<U> To<U>()
-            where U: unmanaged, IPixel
+            where U : unmanaged, IPixel
         {
             return new Image<U>(Width, Height, PixelHelper.Convert<T, U>(_pixels));
+        }
+
+        public void FlipVertically()
+        {
+            _pixels = PixelHelper.FlipVertically(_pixels, Width, Height);
         }
     }
 }

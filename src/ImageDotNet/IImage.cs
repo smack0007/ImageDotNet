@@ -19,5 +19,7 @@ namespace ImageDotNet
         void ForEachPixel(Action<IPixel> action);
 
         Image<T> To<T>() where T : unmanaged, IPixel;
+
+        void FlipVertically();
     }
 }
