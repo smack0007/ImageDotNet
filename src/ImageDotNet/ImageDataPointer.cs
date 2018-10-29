@@ -5,7 +5,7 @@ namespace ImageDotNet
 {
     public struct ImageDataPointer : IDisposable
     {
-        private GCHandle handle;
+        private GCHandle _handle;
 
         public IntPtr Pointer { get; }
 
@@ -13,14 +13,14 @@ namespace ImageDotNet
 
         internal ImageDataPointer(GCHandle handle, int length)
         {
-            this.handle = handle;
-            this.Pointer = this.handle.AddrOfPinnedObject();
-            this.Length = length;
+            _handle = handle;
+            Pointer = _handle.AddrOfPinnedObject();
+            Length = length;
         }
 
         public void Dispose()
         {
-            this.handle.Free();
+            _handle.Free();
         }
     }
 }

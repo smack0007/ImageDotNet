@@ -3,26 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace ImageDotNet
 {
-    public static partial class PixelHelper
+    internal static partial class PixelHelper
     {
-        internal unsafe static byte[] ToByteArray<T>(this T[] pixels)
-            where T: unmanaged, IPixel
-        {
-            int pixelSize = Marshal.SizeOf<T>();
-
-            int byteCount = pixels.Length * pixelSize;
-            var buffer = new byte[byteCount];
-
-            fixed (void* pixelsPtr = pixels)
-            fixed (void* bufferPtr = buffer)
-            {
-                Buffer.MemoryCopy(pixelsPtr, bufferPtr, buffer.LongLength, buffer.LongLength);
-            }
-
-            return buffer;
-        }
-
-        internal unsafe static T[] ToPixelArray<T>(this byte[] pixels)
+        public unsafe static T[] ToPixelArray<T>(this byte[] pixels)
             where T: unmanaged, IPixel
         {
             var pixelSize = Marshal.SizeOf<T>();
@@ -41,27 +24,7 @@ namespace ImageDotNet
             return buffer;
         }
 
-        internal unsafe static T[] Clone<T>(T[] pixels)
-            where T : unmanaged, IPixel
-        {
-            Guard.NotNull(pixels, nameof(pixels));
-
-            var pixelSizeInBytes = Marshal.SizeOf<T>();
-
-            var buffer = new T[pixels.Length];
-
-            var byteCount = pixels.LongLength * pixelSizeInBytes;
-
-            fixed (void* pixelsPtr = pixels)
-            fixed (void* bufferPtr = buffer)
-            {
-                Buffer.MemoryCopy(pixelsPtr, bufferPtr, byteCount, byteCount);
-            }
-
-            return buffer;
-        }
-
-        internal static byte[] FlipVertically(this byte[] pixels, int width, int height, int bytesPerPixel)
+        public static byte[] FlipVertically(this byte[] pixels, int width, int height, int bytesPerPixel)
         {
             Guard.NotNull(pixels, nameof(pixels));
 
@@ -84,7 +47,7 @@ namespace ImageDotNet
             return pixels;
         }
 
-        internal static T[] FlipVertically<T>(this T[] pixels, int width, int height)
+        public static T[] FlipVertically<T>(this T[] pixels, int width, int height)
             where T: struct, IPixel
         {
             Guard.NotNull(pixels, nameof(pixels));
@@ -105,7 +68,7 @@ namespace ImageDotNet
             return pixels;
         }
 
-        internal static unsafe U[] Convert<T, U>(this T[] source)
+        public static unsafe U[] Convert<T, U>(this T[] source)
             where T : unmanaged, IPixel
             where U : unmanaged, IPixel
         {
@@ -123,7 +86,7 @@ namespace ImageDotNet
                 }
                 else
                 {
-                    Convert<T, U>((byte*)sourcePtr, (byte*)destinationPtr, source.Length);
+                    Convert(typeof(T), (byte*)sourcePtr, typeof(U), (byte*)destinationPtr, source.Length);
                 }
             }
 

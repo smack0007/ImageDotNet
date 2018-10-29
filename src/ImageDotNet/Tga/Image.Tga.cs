@@ -110,23 +110,22 @@ namespace ImageDotNet
 
             bw.Write(header);
 
-            byte[] pixels = null;
-            if (BytesPerPixel == 3)
+            using (var pixels = PixelData.Clone(_pixels))
             {
-                pixels = _pixels
-                    .Convert<T, Bgr24>()
-                    .FlipVertically(Width, Height)
-                    .ToByteArray();
-            }
-            else if (BytesPerPixel == 4)
-            {
-                pixels = _pixels
-                    .Convert<T, Bgra32>()
-                    .FlipVertically(Width, Height)
-                    .ToByteArray();
-            }
+                if (BytesPerPixel == 3)
+                {
+                    pixels.Convert<Bgr24>();
+                }
+                else if (BytesPerPixel == 4)
+                {
+                    pixels.Convert<Bgra32>();
+                }
 
-            bw.Write(pixels);
+                pixels.FlipVertically(Width, Height);
+
+                for (int i = 0; i < pixels.Length; i++)
+                    bw.Write(pixels[i]);
+            }
 
             bw.Flush();
         }

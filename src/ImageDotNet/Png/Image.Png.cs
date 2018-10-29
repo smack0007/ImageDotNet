@@ -181,42 +181,40 @@ namespace ImageDotNet
 
             byte[] idat = null;
 
-            byte[] pixels = null;
-            if (BytesPerPixel == 3)
+            using (var pixels = PixelData.Clone(_pixels))
             {
-                pixels = _pixels
-                    .Convert<T, Rgb24>()
-                    .ToByteArray();
-            }
-            else if (BytesPerPixel == 4)
-            {
-                pixels = _pixels
-                    .Convert<T, Rgba32>()
-                    .ToByteArray();
-            }
-
-            using (var ms = new MemoryStream(pixels.Length + 2)) // Add 2 bytes for zlib header
-            {
-                // Don't know if the zlib header has to be 24 and 87 but it
-                // seems to work.
-                ms.WriteByte(24);
-                ms.WriteByte(87);
-
-                using (var deflate = new DeflateStream(ms, CompressionLevel.Optimal))
+                if (BytesPerPixel == 3)
                 {
-                    for (int y = 0; y < Height; y++)
+                    pixels.Convert<Rgb24>();
+                }
+                else
+                {
+                    pixels.Convert<Rgba32>();
+                }
+
+                using (var ms = new MemoryStream(pixels.Length + 2)) // Add 2 bytes for zlib header
+                {
+                    // Don't know if the zlib header has to be 24 and 87 but it
+                    // seems to work.
+                    ms.WriteByte(24);
+                    ms.WriteByte(87);
+
+                    using (var deflate = new DeflateStream(ms, CompressionLevel.Optimal))
                     {
-                        for (int x = 0; x < Width; x++)
+                        for (int y = 0; y < Height; y++)
                         {
-                            for (int i = 0; i < BytesPerPixel; i++)
-                                scanline[(x * BytesPerPixel) + i + 1] = pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
+                            for (int x = 0; x < Width; x++)
+                            {
+                                for (int i = 0; i < BytesPerPixel; i++)
+                                    scanline[(x * BytesPerPixel) + i + 1] = pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
+                            }
+
+                            deflate.Write(scanline, 0, scanline.Length);
                         }
 
-                        deflate.Write(scanline, 0, scanline.Length);
+                        deflate.Flush();
+                        idat = ms.ToArray();
                     }
-
-                    deflate.Flush();
-                    idat = ms.ToArray();
                 }
             }
 

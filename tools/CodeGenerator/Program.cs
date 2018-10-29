@@ -39,7 +39,7 @@ using System;
 
 namespace ImageDotNet
 {{
-    public static partial class PixelHelper
+    internal static partial class PixelHelper
     {{
 {convert.ToString().TrimEnd()}        
     }}
@@ -49,9 +49,7 @@ namespace ImageDotNet
         private static StringBuilder BuildPixelHelperConvertMethod(string[] pixels)
         {
             var convert = new StringBuilder(1024);
-            convert.AppendLine($"{tab}{tab}private static unsafe void Convert<T, U>(byte* sourcePtr, byte* destinationPtr, int length)");
-            convert.AppendLine($"{tab}{tab}{tab}where T : unmanaged, IPixel");
-            convert.AppendLine($"{tab}{tab}{tab}where U : unmanaged, IPixel");
+            convert.AppendLine($"{tab}{tab}public static unsafe void Convert(Type sourceType, byte* sourcePtr, Type destinationType, byte* destinationPtr, int length)");
             convert.AppendLine($"{tab}{tab}{{");
 
             bool first = true;
@@ -60,7 +58,7 @@ namespace ImageDotNet
                 var @if = first ? "if" : "else if";
                 first = false;
 
-                convert.AppendLine($"{tab}{tab}{tab}{@if} (typeof(T) == typeof({tPixel}))");
+                convert.AppendLine($"{tab}{tab}{tab}{@if} (sourceType == typeof({tPixel}))");
                 convert.AppendLine($"{tab}{tab}{tab}{{");
 
                 bool first2 = true;
@@ -69,7 +67,7 @@ namespace ImageDotNet
                     var @if2 = first2 ? "if" : "else if";
                     first2 = false;
 
-                    convert.AppendLine($"{tab}{tab}{tab}{tab}{@if2} (typeof(U) == typeof({uPixel}))");
+                    convert.AppendLine($"{tab}{tab}{tab}{tab}{@if2} (destinationType == typeof({uPixel}))");
                     convert.AppendLine($"{tab}{tab}{tab}{tab}{{");
                     convert.AppendLine($"{tab}{tab}{tab}{tab}{tab}Convert{tPixel}To{uPixel}(sourcePtr, destinationPtr, length);");
                     convert.AppendLine($"{tab}{tab}{tab}{tab}}}");
