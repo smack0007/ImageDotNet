@@ -38,6 +38,7 @@ namespace ImageDotNet
             byte[] pixels = null;
             int pixelsOffset = 0;
             byte[] scanline = null;
+            byte[] idat = null;
 
             while (true)
             {
@@ -86,26 +87,19 @@ namespace ImageDotNet
                         break;
 
                     case PngHelper.ChunkType.IDAT:
-                        using (MemoryStream chunkDataStream = new MemoryStream(chunkData))
+                        if (idat == null)
                         {
-                            // Read past the first two bytes of the zlib header
-                            chunkDataStream.Seek(2, SeekOrigin.Begin);
-
-                            using (var deflate = new DeflateStream(chunkDataStream, CompressionMode.Decompress))
-                            {
-                                for (int i = 0; i < height; i++)
-                                {
-                                    var scanlineFilterAlgorithm = deflate.ReadByte();
-                                    deflate.Read(scanline, 0, scanline.Length);
-
-                                    // TODO: Reverse scanline filter algorithm
-
-                                    Buffer.BlockCopy(scanline, 0, pixels, pixelsOffset, scanline.Length);
-                                    pixelsOffset += scanline.Length;
-                                }
-                            }
+                            idat = chunkData;
                         }
-                                              
+                        else
+                        {
+                            var newIdat = new byte[idat.Length + chunkData.Length];
+
+                            Buffer.BlockCopy(idat, 0, newIdat, 0, idat.Length);
+                            Buffer.BlockCopy(chunkData, 0, newIdat, idat.Length, chunkData.Length);
+
+                            idat = newIdat;
+                        }
                         break;
                 }
 
@@ -113,6 +107,29 @@ namespace ImageDotNet
                 stream.Read(chunkCrc, 0, 4);
 
                 var crc = BinaryHelper.ReadBigEndianUInt32(chunkCrc, 0);
+            }
+
+            if (idat == null)
+                throw new ImageDotNetException("No IDAT chunk found.");
+
+            using (MemoryStream chunkDataStream = new MemoryStream(idat))
+            {
+                // Read past the first two bytes of the zlib header
+                chunkDataStream.Seek(2, SeekOrigin.Begin);
+
+                using (var deflate = new DeflateStream(chunkDataStream, CompressionMode.Decompress))
+                {
+                    for (int i = 0; i < height; i++)
+                    {
+                        var scanlineFilterAlgorithm = deflate.ReadByte();
+                        deflate.Read(scanline, 0, scanline.Length);
+
+                        // TODO: Reverse scanline filter algorithm
+
+                        Buffer.BlockCopy(scanline, 0, pixels, pixelsOffset, scanline.Length);
+                        pixelsOffset += scanline.Length;
+                    }
+                }
             }
 
             if (bytesPerPixel == 3)
