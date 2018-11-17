@@ -36,8 +36,6 @@ namespace ImageDotNet
 
             int bytesPerPixel = 0;
             byte[] pixels = null;
-            int pixelsOffset = 0;
-            byte[] scanline = null;
             byte[] idat = null;
 
             while (true)
@@ -79,7 +77,6 @@ namespace ImageDotNet
                         }
 
                         pixels = new byte[width * height * bytesPerPixel];
-                        scanline = new byte[width * bytesPerPixel];
                         break;
 
                     case PngHelper.ChunkType.PLTE:
@@ -117,6 +114,10 @@ namespace ImageDotNet
                 // Read past the first two bytes of the zlib header
                 chunkDataStream.Seek(2, SeekOrigin.Begin);
 
+                int pixelsOffset = 0;
+                byte[] scanline = new byte[width * bytesPerPixel];
+                byte[] previousScanline = new byte[scanline.Length];
+
                 using (var deflate = new DeflateStream(chunkDataStream, CompressionMode.Decompress))
                 {
                     for (int i = 0; i < height; i++)
@@ -124,10 +125,32 @@ namespace ImageDotNet
                         var scanlineFilterAlgorithm = deflate.ReadByte();
                         deflate.Read(scanline, 0, scanline.Length);
 
-                        // TODO: Reverse scanline filter algorithm
+                        if (scanlineFilterAlgorithm != 0)
+                        {
+                            for (int x = 0; x < scanline.Length; x++)
+                            {
+                                switch (scanlineFilterAlgorithm)
+                                {
+                                    case 1: // Sub
+                                        throw new ImageDotNetException("Sub filter algorithm in PNG not implemented.");
+
+                                    case 2: // Up
+                                        scanline[x] = (byte)(scanline[x] + previousScanline[x]);
+                                        break;
+
+                                    case 3: // Average
+                                        throw new ImageDotNetException("Average filter algorithm in PNG not implemented.");
+
+                                    case 4: // Paeth
+                                        throw new ImageDotNetException("Paeth filter algorithm in PNG not implemented.");
+                                }
+                            }
+                        }
 
                         Buffer.BlockCopy(scanline, 0, pixels, pixelsOffset, scanline.Length);
                         pixelsOffset += scanline.Length;
+
+                        Buffer.BlockCopy(scanline, 0, previousScanline, 0, scanline.Length);
                     }
                 }
             }
