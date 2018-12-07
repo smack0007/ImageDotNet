@@ -15,7 +15,7 @@ steps:
   displayName: 'dotnet test'
   inputs:
     command: test
-    projects: 'tests/**/.csproj'
+    projects: 'tests/ImageDotNet.Tests/ImageDotNet.Tests.csproj'
     arguments: '-c Release'
 
 - task: DotNetCoreCLI@2
