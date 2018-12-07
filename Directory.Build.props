@@ -24,18 +24,4 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/smack0007/ImageDotNet.git</RepositoryUrl>
     </PropertyGroup>
-
-    <Target Name="WriteLaunchers" AfterTargets="CopyFilesToOutputDirectory" Condition=" $(OutputType) == 'Exe' ">
-      <PropertyGroup>
-        <LauncherCmd>
-@ECHO OFF
-dotnet %~dp0$(AssemblyName)\$(TargetFramework)\$(AssemblyName).dll %*
-        </LauncherCmd>
-      </PropertyGroup>
-
-      <WriteLinesToFile
-        File="$(BinDirectory)$(Configuration)\$(AssemblyName).cmd"
-        Overwrite="true"
-        Lines="$(LauncherCmd)" />
-    </Target>
 </Project>

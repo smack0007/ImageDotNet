@@ -18,8 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4DFB16AE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageDotNet.Tests", "tests\ImageDotNet.Tests\ImageDotNet.Tests.csproj", "{68CEC028-C666-4D23-AE04-BCFFA3A1C48F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{B117A084-C9E7-4FB0-A309-8847287C14D0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImageDotNet", "ImageDotNet", "{B117A084-C9E7-4FB0-A309-8847287C14D0}"
 	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
@@ -27,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoadPng", "samples\LoadPng\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{12D773FB-0351-4EF0-AE45-F34604AC3948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenerator", "tools\CodeGenerator\CodeGenerator.csproj", "{77415187-67A5-40E3-94CC-7CA448D0EC36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGenerator", "tools\CodeGenerator\CodeGenerator.csproj", "{77415187-67A5-40E3-94CC-7CA448D0EC36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
