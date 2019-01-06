@@ -56,6 +56,12 @@ namespace ImageDotNet
                 action(pixel);
         }
 
+        public bool Is<U>()
+            where U : unmanaged, IPixel
+        {
+            return typeof(T) == typeof(U);
+        }
+
         public Image<U> To<U>()
             where U : unmanaged, IPixel
         {

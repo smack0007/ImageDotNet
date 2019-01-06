@@ -2,7 +2,7 @@
 
 namespace ImageDotNet.Tests
 {
-    public class ImageTests
+    public partial class ImageTests
     {
         [Fact]
         public void ToAlwaysReturnsANewImage()
