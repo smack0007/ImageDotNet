@@ -30,7 +30,7 @@ namespace ImageDotNet
 
             _pixels = pixels;
 
-            if (this._pixels.Length != Width * Height)
+            if (_pixels.Length != Width * Height)
                 throw new ImageDotNetException($"The format of the pixels is incorrect. The length of the pixels array should be {Width * Height} but was {_pixels.Length}");
         }
         

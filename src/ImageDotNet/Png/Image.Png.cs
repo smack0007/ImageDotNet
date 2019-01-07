@@ -7,6 +7,8 @@ namespace ImageDotNet
 {
     public static partial class Image
     {
+        private static readonly string[] PngExtensions = new string[] { ".png" };
+
         public static IImage LoadPng(string fileName)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
@@ -15,16 +17,45 @@ namespace ImageDotNet
             }
         }
 
+        public static bool IsPng(Stream stream)
+        {
+            var position = stream.Position;
+            bool result = true;
+
+            try
+            {
+                var header = new byte[PngHelper.HeaderBytes.Length];
+                stream.Read(header, 0, header.Length);
+
+                for (int i = 0; i < PngHelper.HeaderBytes.Length; i++)
+                {
+                    if (header[i] != PngHelper.HeaderBytes[i])
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+            catch
+            {
+                result = false;
+            }
+            finally
+            {
+                stream.Position = position;
+            }
+
+            return result;
+        }
+
         public static IImage LoadPng(Stream stream)
         {
-            var header = new byte[PngHelper.HeaderBytes.Length];
-            stream.Read(header, 0, header.Length);
-
-            for (int i = 0; i < PngHelper.HeaderBytes.Length; i++)
+            if (!IsPng(stream))
             {
-                if (header[i] != PngHelper.HeaderBytes[i])
-                    throw new ImageDotNetException("PNG header incorrect.");
+                throw new ImageDotNetException("PNG header incorrect.");
             }
+
+            stream.Position += PngHelper.HeaderBytes.Length;
 
             uint width = 0;
             uint height = 0;

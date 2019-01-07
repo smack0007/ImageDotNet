@@ -5,12 +5,19 @@ namespace ImageDotNet
 {
     public static partial class Image
     {
+        private static readonly string[] TgaExtensions = new string[] { ".tga" };
+
         public static IImage LoadTga(string fileName)
         {
             using (var file = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             {
                 return LoadTga(file);
             }
+        }
+
+        public static bool IsTga(Stream stream)
+        {
+            return false;
         }
 
         public static IImage LoadTga(Stream stream)
