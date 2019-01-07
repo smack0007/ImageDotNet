@@ -40,20 +40,23 @@ namespace ImageDotNet
             return new ImageDataPointer(handle, Length);
         }
 
-        public void ForEachPixel(Action<T> action)
+        public void ForEachPixel(PixelAction<T> action)
         {
             Guard.NotNull(action, nameof(action));
 
-            foreach (var pixel in _pixels)
-                action(pixel);
+            for (int i = 0; i < _pixels.Length; i++)
+                action(ref _pixels[i]);
         }
 
-        void IImage.ForEachPixel(Action<IPixel> action)
+        void IImage.ForEachPixel(PixelAction action)
         {
             Guard.NotNull(action, nameof(action));
 
-            foreach (var pixel in _pixels)
-                action(pixel);
+            for (int i = 0; i < _pixels.Length; i++)
+            {
+                IPixel pixel = _pixels[i];
+                action(ref pixel);
+            }
         }
 
         public bool Is<U>()

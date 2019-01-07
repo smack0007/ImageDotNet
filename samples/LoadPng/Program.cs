@@ -23,7 +23,7 @@ namespace LoadPng
 
                 Console.WriteLine(image.PixelType.Name);
 
-                image.ForEachPixel(x => Console.WriteLine(x));
+                image.ForEachPixel((ref Rgba32 x) => Console.WriteLine(x));
                 
                 Console.WriteLine();
             }

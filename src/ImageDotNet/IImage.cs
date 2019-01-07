@@ -16,7 +16,7 @@ namespace ImageDotNet
 
         ImageDataPointer GetDataPointer();
 
-        void ForEachPixel(Action<IPixel> action);
+        void ForEachPixel(PixelAction action);
 
         bool Is<T>() where T : unmanaged, IPixel;
 

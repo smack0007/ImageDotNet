@@ -22,15 +22,11 @@ namespace ImageDotNet.Demo
             {
                 Console.WriteLine("{0}:", fileName);
 
-                var image = Image.LoadTga(Path.Combine(basePath, fileName));
+                var image = Image.LoadTga(Path.Combine(basePath, fileName)).To<Rgba32>();
 
                 Console.WriteLine(image.PixelType.Name);
 
-                image = image.To<Rgba32>();
-
-                Console.WriteLine(image.PixelType.Name);
-
-                image.ForEachPixel(x => Console.WriteLine(x));
+                image.ForEachPixel((ref Rgba32 x) => Console.WriteLine(x));
 
                 Console.WriteLine();
             }
