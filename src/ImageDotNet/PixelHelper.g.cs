@@ -5,101 +5,101 @@ namespace ImageDotNet
 {
     internal static partial class PixelHelper
     {
-        public static unsafe void Convert(Type sourceType, byte* sourcePtr, Type destinationType, byte* destinationPtr, int length)
+        public static unsafe void ConvertInPlace(Type sourceType, byte* sourcePtr, Type destinationType, byte* destinationPtr, int length)
         {
             if (sourceType == typeof(Bgr24))
             {
                 if (destinationType == typeof(Bgra32))
                 {
-                    ConvertBgr24ToBgra32(sourcePtr, destinationPtr, length);
+                    ConvertBgr24ToBgra32InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Gray8))
                 {
-                    ConvertBgr24ToGray8(sourcePtr, destinationPtr, length);
+                    ConvertBgr24ToGray8InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgb24))
                 {
-                    ConvertBgr24ToRgb24(sourcePtr, destinationPtr, length);
+                    ConvertBgr24ToRgb24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgba32))
                 {
-                    ConvertBgr24ToRgba32(sourcePtr, destinationPtr, length);
+                    ConvertBgr24ToRgba32InPlace(sourcePtr, destinationPtr, length);
                 }
             }
             else if (sourceType == typeof(Bgra32))
             {
                 if (destinationType == typeof(Bgr24))
                 {
-                    ConvertBgra32ToBgr24(sourcePtr, destinationPtr, length);
+                    ConvertBgra32ToBgr24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Gray8))
                 {
-                    ConvertBgra32ToGray8(sourcePtr, destinationPtr, length);
+                    ConvertBgra32ToGray8InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgb24))
                 {
-                    ConvertBgra32ToRgb24(sourcePtr, destinationPtr, length);
+                    ConvertBgra32ToRgb24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgba32))
                 {
-                    ConvertBgra32ToRgba32(sourcePtr, destinationPtr, length);
+                    ConvertBgra32ToRgba32InPlace(sourcePtr, destinationPtr, length);
                 }
             }
             else if (sourceType == typeof(Gray8))
             {
                 if (destinationType == typeof(Bgr24))
                 {
-                    ConvertGray8ToBgr24(sourcePtr, destinationPtr, length);
+                    ConvertGray8ToBgr24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Bgra32))
                 {
-                    ConvertGray8ToBgra32(sourcePtr, destinationPtr, length);
+                    ConvertGray8ToBgra32InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgb24))
                 {
-                    ConvertGray8ToRgb24(sourcePtr, destinationPtr, length);
+                    ConvertGray8ToRgb24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgba32))
                 {
-                    ConvertGray8ToRgba32(sourcePtr, destinationPtr, length);
+                    ConvertGray8ToRgba32InPlace(sourcePtr, destinationPtr, length);
                 }
             }
             else if (sourceType == typeof(Rgb24))
             {
                 if (destinationType == typeof(Bgr24))
                 {
-                    ConvertRgb24ToBgr24(sourcePtr, destinationPtr, length);
+                    ConvertRgb24ToBgr24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Bgra32))
                 {
-                    ConvertRgb24ToBgra32(sourcePtr, destinationPtr, length);
+                    ConvertRgb24ToBgra32InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Gray8))
                 {
-                    ConvertRgb24ToGray8(sourcePtr, destinationPtr, length);
+                    ConvertRgb24ToGray8InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgba32))
                 {
-                    ConvertRgb24ToRgba32(sourcePtr, destinationPtr, length);
+                    ConvertRgb24ToRgba32InPlace(sourcePtr, destinationPtr, length);
                 }
             }
             else if (sourceType == typeof(Rgba32))
             {
                 if (destinationType == typeof(Bgr24))
                 {
-                    ConvertRgba32ToBgr24(sourcePtr, destinationPtr, length);
+                    ConvertRgba32ToBgr24InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Bgra32))
                 {
-                    ConvertRgba32ToBgra32(sourcePtr, destinationPtr, length);
+                    ConvertRgba32ToBgra32InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Gray8))
                 {
-                    ConvertRgba32ToGray8(sourcePtr, destinationPtr, length);
+                    ConvertRgba32ToGray8InPlace(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgb24))
                 {
-                    ConvertRgba32ToRgb24(sourcePtr, destinationPtr, length);
+                    ConvertRgba32ToRgb24InPlace(sourcePtr, destinationPtr, length);
                 }
             }
         }        

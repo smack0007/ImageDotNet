@@ -86,7 +86,7 @@ namespace ImageDotNet
                 }
                 else
                 {
-                    Convert(typeof(T), (byte*)sourcePtr, typeof(U), (byte*)destinationPtr, source.Length);
+                    ConvertInPlace(typeof(T), (byte*)sourcePtr, typeof(U), (byte*)destinationPtr, source.Length);
                 }
             }
 
@@ -104,7 +104,7 @@ namespace ImageDotNet
             return (byte)((max + min) / 2);
         }
 
-        private static unsafe void ConvertBgr24ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgr24ToGray8InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -114,7 +114,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgr24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgr24ToBgra32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -126,7 +126,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgr24ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgr24ToRgb24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -137,7 +137,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgr24ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgr24ToRgba32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -149,7 +149,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgra32ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgra32ToBgr24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -161,7 +161,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgra32ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgra32ToGray8InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -171,7 +171,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgra32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgra32ToRgb24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -183,7 +183,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertBgra32ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertBgra32ToRgba32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -195,7 +195,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertGray8ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertGray8ToBgr24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -207,7 +207,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertGray8ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertGray8ToBgra32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -219,7 +219,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertGray8ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertGray8ToRgb24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -231,7 +231,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertGray8ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertGray8ToRgba32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -243,7 +243,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgb24ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgb24ToBgr24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -254,7 +254,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgb24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgb24ToBgra32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -266,7 +266,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgb24ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgb24ToGray8InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -276,7 +276,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgb24ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgb24ToRgba32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -288,7 +288,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgba32ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgba32ToBgr24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -300,7 +300,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgba32ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgba32ToBgra32InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -312,7 +312,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgba32ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgba32ToGray8InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {
@@ -322,7 +322,7 @@ namespace ImageDotNet
             }
         }
 
-        private static unsafe void ConvertRgba32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        private static unsafe void ConvertRgba32ToRgb24InPlace(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
             {

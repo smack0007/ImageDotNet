@@ -80,7 +80,7 @@ namespace ImageDotNet
 
             fixed (void* bufferPtr = buffer)
             {
-                PixelHelper.Convert(PixelType, _pointer, typeof(T), (byte*)bufferPtr, LengthInPixels);
+                PixelHelper.ConvertInPlace(PixelType, _pointer, typeof(T), (byte*)bufferPtr, LengthInPixels);
             }
 
             SetData(buffer);

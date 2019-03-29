@@ -121,7 +121,7 @@ namespace ImageDotNet
         private static StringBuilder BuildPixelHelperConvertMethod(string[] pixels)
         {
             var convert = new StringBuilder(1024);
-            convert.AppendLine($"{tab}{tab}public static unsafe void Convert(Type sourceType, byte* sourcePtr, Type destinationType, byte* destinationPtr, int length)");
+            convert.AppendLine($"{tab}{tab}public static unsafe void ConvertInPlace(Type sourceType, byte* sourcePtr, Type destinationType, byte* destinationPtr, int length)");
             convert.AppendLine($"{tab}{tab}{{");
 
             bool first = true;
@@ -141,7 +141,7 @@ namespace ImageDotNet
 
                     convert.AppendLine($"{tab}{tab}{tab}{tab}{@if2} (destinationType == typeof({uPixel}))");
                     convert.AppendLine($"{tab}{tab}{tab}{tab}{{");
-                    convert.AppendLine($"{tab}{tab}{tab}{tab}{tab}Convert{tPixel}To{uPixel}(sourcePtr, destinationPtr, length);");
+                    convert.AppendLine($"{tab}{tab}{tab}{tab}{tab}Convert{tPixel}To{uPixel}InPlace(sourcePtr, destinationPtr, length);");
                     convert.AppendLine($"{tab}{tab}{tab}{tab}}}");
                 }
 
