@@ -66,6 +66,36 @@ namespace ImageDotNet.Tests
         }
 
         [Fact]
+        public void SaveAndLoad_Gray8_1x1()
+        {
+            AssertSaveAndLoad(new Image<Gray8>(1, 1, TestData.Gray8Images.Image1x1));
+        }
+
+        [Fact]
+        public void SaveAndLoad_Gray8_2x2()
+        {
+            AssertSaveAndLoad(new Image<Gray8>(2, 2, TestData.Gray8Images.Image2x2));
+        }
+
+        [Fact]
+        public void SaveAndLoad_Gray8_3x3()
+        {
+            AssertSaveAndLoad(new Image<Gray8>(3, 3, TestData.Gray8Images.Image3x3));
+        }
+
+        [Fact]
+        public void SaveAndLoad_Gray8_4x4()
+        {
+            AssertSaveAndLoad(new Image<Gray8>(4, 4, TestData.Gray8Images.Image4x4));
+        }
+
+        [Fact]
+        public void SaveAndLoad_Gray8_5x5()
+        {
+            AssertSaveAndLoad(new Image<Gray8>(5, 5, TestData.Gray8Images.Image5x5));
+        }
+
+        [Fact]
         public void SaveAndLoad_Rgb24_1x1()
         {
             AssertSaveAndLoad(new Image<Rgb24>(1, 1, TestData.Rgb24Images.Image1x1));

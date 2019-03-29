@@ -13,6 +13,10 @@ namespace ImageDotNet
                 {
                     ConvertBgr24ToBgra32(sourcePtr, destinationPtr, length);
                 }
+                else if (destinationType == typeof(Gray8))
+                {
+                    ConvertBgr24ToGray8(sourcePtr, destinationPtr, length);
+                }
                 else if (destinationType == typeof(Rgb24))
                 {
                     ConvertBgr24ToRgb24(sourcePtr, destinationPtr, length);
@@ -28,6 +32,10 @@ namespace ImageDotNet
                 {
                     ConvertBgra32ToBgr24(sourcePtr, destinationPtr, length);
                 }
+                else if (destinationType == typeof(Gray8))
+                {
+                    ConvertBgra32ToGray8(sourcePtr, destinationPtr, length);
+                }
                 else if (destinationType == typeof(Rgb24))
                 {
                     ConvertBgra32ToRgb24(sourcePtr, destinationPtr, length);
@@ -35,6 +43,25 @@ namespace ImageDotNet
                 else if (destinationType == typeof(Rgba32))
                 {
                     ConvertBgra32ToRgba32(sourcePtr, destinationPtr, length);
+                }
+            }
+            else if (sourceType == typeof(Gray8))
+            {
+                if (destinationType == typeof(Bgr24))
+                {
+                    ConvertGray8ToBgr24(sourcePtr, destinationPtr, length);
+                }
+                else if (destinationType == typeof(Bgra32))
+                {
+                    ConvertGray8ToBgra32(sourcePtr, destinationPtr, length);
+                }
+                else if (destinationType == typeof(Rgb24))
+                {
+                    ConvertGray8ToRgb24(sourcePtr, destinationPtr, length);
+                }
+                else if (destinationType == typeof(Rgba32))
+                {
+                    ConvertGray8ToRgba32(sourcePtr, destinationPtr, length);
                 }
             }
             else if (sourceType == typeof(Rgb24))
@@ -46,6 +73,10 @@ namespace ImageDotNet
                 else if (destinationType == typeof(Bgra32))
                 {
                     ConvertRgb24ToBgra32(sourcePtr, destinationPtr, length);
+                }
+                else if (destinationType == typeof(Gray8))
+                {
+                    ConvertRgb24ToGray8(sourcePtr, destinationPtr, length);
                 }
                 else if (destinationType == typeof(Rgba32))
                 {
@@ -62,11 +93,15 @@ namespace ImageDotNet
                 {
                     ConvertRgba32ToBgra32(sourcePtr, destinationPtr, length);
                 }
+                else if (destinationType == typeof(Gray8))
+                {
+                    ConvertRgba32ToGray8(sourcePtr, destinationPtr, length);
+                }
                 else if (destinationType == typeof(Rgb24))
                 {
                     ConvertRgba32ToRgb24(sourcePtr, destinationPtr, length);
                 }
             }
-        }        
+        }
     }
 }

@@ -83,6 +83,45 @@ namespace ImageDotNet.Tests
 
         }
 
+        public static class Gray8Images
+        {
+            public static readonly Gray8[] Image1x1 = new Gray8[]
+            {
+                new Gray8(1),
+            };
+
+            public static readonly Gray8[] Image2x2 = new Gray8[]
+            {
+                new Gray8(1),new Gray8(2),
+                new Gray8(3),new Gray8(4),
+            };
+
+            public static readonly Gray8[] Image3x3 = new Gray8[]
+            {
+                new Gray8(1),new Gray8(2),new Gray8(3),
+                new Gray8(4),new Gray8(5),new Gray8(6),
+                new Gray8(7),new Gray8(8),new Gray8(9),
+            };
+
+            public static readonly Gray8[] Image4x4 = new Gray8[]
+            {
+                new Gray8(1),new Gray8(2),new Gray8(3),new Gray8(4),
+                new Gray8(5),new Gray8(6),new Gray8(7),new Gray8(8),
+                new Gray8(9),new Gray8(10),new Gray8(11),new Gray8(12),
+                new Gray8(13),new Gray8(14),new Gray8(15),new Gray8(16),
+            };
+
+            public static readonly Gray8[] Image5x5 = new Gray8[]
+            {
+                new Gray8(1),new Gray8(2),new Gray8(3),new Gray8(4),new Gray8(5),
+                new Gray8(6),new Gray8(7),new Gray8(8),new Gray8(9),new Gray8(10),
+                new Gray8(11),new Gray8(12),new Gray8(13),new Gray8(14),new Gray8(15),
+                new Gray8(16),new Gray8(17),new Gray8(18),new Gray8(19),new Gray8(20),
+                new Gray8(21),new Gray8(22),new Gray8(23),new Gray8(24),new Gray8(25),
+            };
+
+        }
+
         public static class Rgb24Images
         {
             public static readonly Rgb24[] Image1x1 = new Rgb24[]

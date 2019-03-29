@@ -98,6 +98,10 @@ namespace ImageDotNet
 
                         switch (colorType)
                         {
+                            case 0: // GRAY8
+                                bytesPerPixel = 1;
+                                break;
+
                             case 2: // RGB
                                 bytesPerPixel = 3;
                                 break;
@@ -186,13 +190,19 @@ namespace ImageDotNet
                 }
             }
 
-            if (bytesPerPixel == 3)
+            switch (bytesPerPixel)
             {
-                return new Image<Rgb24>((int)width, (int)height, PixelHelper.ToPixelArray<Rgb24>(pixels));
-            }
-            else
-            {
-                return new Image<Rgba32>((int)width, (int)height, PixelHelper.ToPixelArray<Rgba32>(pixels));
+                case 1:
+                    return new Image<Gray8>((int)width, (int)height, PixelHelper.ToPixelArray<Gray8>(pixels));
+
+                case 3:
+                    return new Image<Rgb24>((int)width, (int)height, PixelHelper.ToPixelArray<Rgb24>(pixels));
+
+                case 4:
+                    return new Image<Rgba32>((int)width, (int)height, PixelHelper.ToPixelArray<Rgba32>(pixels));
+
+                default:
+                    throw new ImageDotNetException($"PNG loading not implemented for images with {bytesPerPixel} bytes per pixel.");
             }
         }
 
@@ -228,7 +238,7 @@ namespace ImageDotNet
         {
             using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
-                this.SavePng(file);
+                SavePng(file);
             }
         }
 
@@ -241,7 +251,7 @@ namespace ImageDotNet
             BinaryHelper.WriteBigEndianUInt32(ihdr, 0, (uint)Width);
             BinaryHelper.WriteBigEndianUInt32(ihdr, 4, (uint)Height);
             ihdr[8] = 8; // bitDepth
-            ihdr[9] = GetColorType();
+            ihdr[9] = GetColorTypeForSavePng();
             ihdr[10] = 0; // compressionMethod
             ihdr[11] = 0; // filterMethod
             ihdr[12] = 0; // interlaceMethod
@@ -254,11 +264,12 @@ namespace ImageDotNet
 
             using (var pixels = PixelData.Clone(_pixels))
             {
+                // Ensure that images with 3 or 4 BPP are in RGB order.
                 if (BytesPerPixel == 3)
                 {
                     pixels.Convert<Rgb24>();
                 }
-                else
+                else if (BytesPerPixel == 4)
                 {
                     pixels.Convert<Rgba32>();
                 }
@@ -296,15 +307,21 @@ namespace ImageDotNet
             bw.Flush();
         }
 
-        private byte GetColorType()
+        private byte GetColorTypeForSavePng()
         {
-            if (BytesPerPixel == 3)
+            switch (BytesPerPixel)
             {
-                return 2;
-            }
-            else
-            {
-                return 6;
+                case 1:
+                    return 0;
+
+                case 3:
+                    return 2;
+
+                case 4:
+                    return 6;
+
+                default:
+                    throw new ImageDotNetException($"PNG saving not implemented for images with {BytesPerPixel} bytes per pixel.");
             }
         }
 

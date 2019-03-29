@@ -93,6 +93,27 @@ namespace ImageDotNet
             return destination;
         }
 
+        public static byte ConvertToGrayscale(byte r, byte g, byte b)
+        {
+            // Using lightness method documented here:
+            // https://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
+
+            var min = Math.Min(r, Math.Min(g, b));
+            var max = Math.Max(r, Math.Max(g, b));
+
+            return (byte)((max + min) / 2);
+        }
+
+        private static unsafe void ConvertBgr24ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Bgr24.SizeInBytes;
+                int destinationOffset = i * Gray8.SizeInBytes;
+                destinationPtr[destinationOffset] = ConvertToGrayscale(sourcePtr[sourceOffset + 2], sourcePtr[sourceOffset + 1], sourcePtr[sourceOffset]);
+            }
+        }
+
         private static unsafe void ConvertBgr24ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
@@ -140,6 +161,16 @@ namespace ImageDotNet
             }
         }
 
+        private static unsafe void ConvertBgra32ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Bgra32.SizeInBytes;
+                int destinationOffset = i * Gray8.SizeInBytes;
+                destinationPtr[destinationOffset] = ConvertToGrayscale(sourcePtr[sourceOffset + 2], sourcePtr[sourceOffset + 1], sourcePtr[sourceOffset]);
+            }
+        }
+
         private static unsafe void ConvertBgra32ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
@@ -164,6 +195,54 @@ namespace ImageDotNet
             }
         }
 
+        private static unsafe void ConvertGray8ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Gray8.SizeInBytes;
+                int destinationOffset = i * Bgr24.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
+        }
+
+        private static unsafe void ConvertGray8ToBgra32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Gray8.SizeInBytes;
+                int destinationOffset = i * Bgra32.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
+        }
+
+        private static unsafe void ConvertGray8ToRgb24(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Gray8.SizeInBytes;
+                int destinationOffset = i * Rgb24.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
+        }
+
+        private static unsafe void ConvertGray8ToRgba32(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Gray8.SizeInBytes;
+                int destinationOffset = i * Rgba32.SizeInBytes;
+                destinationPtr[destinationOffset] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset];
+                destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
+        }
+
         private static unsafe void ConvertRgb24ToBgr24(byte* sourcePtr, byte* destinationPtr, int length)
         {
             for (int i = 0; i < length; i++)
@@ -184,6 +263,16 @@ namespace ImageDotNet
                 destinationPtr[destinationOffset] = sourcePtr[sourceOffset + 2];
                 destinationPtr[destinationOffset + 1] = sourcePtr[sourceOffset + 1];
                 destinationPtr[destinationOffset + 2] = sourcePtr[sourceOffset];
+            }
+        }
+
+        private static unsafe void ConvertRgb24ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Rgb24.SizeInBytes;
+                int destinationOffset = i * Gray8.SizeInBytes;
+                destinationPtr[destinationOffset] = ConvertToGrayscale(sourcePtr[sourceOffset], sourcePtr[sourceOffset + 1], sourcePtr[sourceOffset + 2]);
             }
         }
 
@@ -220,6 +309,16 @@ namespace ImageDotNet
                 destinationPtr[offset + 1] = sourcePtr[offset + 1];
                 destinationPtr[offset + 2] = sourcePtr[offset];
                 destinationPtr[offset + 3] = sourcePtr[offset + 3];
+            }
+        }
+
+        private static unsafe void ConvertRgba32ToGray8(byte* sourcePtr, byte* destinationPtr, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int sourceOffset = i * Rgba32.SizeInBytes;
+                int destinationOffset = i * Gray8.SizeInBytes;
+                destinationPtr[destinationOffset] = ConvertToGrayscale(sourcePtr[sourceOffset], sourcePtr[sourceOffset + 1], sourcePtr[sourceOffset + 2]);
             }
         }
 

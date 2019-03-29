@@ -153,7 +153,11 @@ namespace ImageDotNet.Tests
 
         private static int GetByteCount(string pixel)
         {
-            if (pixel.EndsWith("24"))
+            if (pixel.EndsWith("8"))
+            {
+                return 1;
+            }
+            else if (pixel.EndsWith("24"))
             {
                 return 3;
             }

@@ -35,8 +35,8 @@ namespace ImageDotNet
             ushort height = BinaryHelper.ReadLittleEndianUInt16(header, TgaHelper.HeaderOffsets.Height);
             byte bytesPerPixel = (byte)(header[TgaHelper.HeaderOffsets.BitsPerPixel] / 8);
 
-            if (bytesPerPixel != 3 && bytesPerPixel != 4)
-                throw new ImageDotNetException("Only 24 and 32 bit TGA images are supported.");
+            if (bytesPerPixel != 1 && bytesPerPixel != 3 && bytesPerPixel != 4)
+                throw new ImageDotNetException("Only 8, 24 and 32 bit TGA images are supported.");
 
             byte[] pixels = null;
             int dataLength = width * height * bytesPerPixel;
@@ -84,7 +84,12 @@ namespace ImageDotNet
 
             pixels = pixels.FlipVertically(width, height, bytesPerPixel);
 
-            if (bytesPerPixel == 3)
+            // We ensured earlier in the method that bytesPerPixel is either 1, 3 or 4.
+            if (bytesPerPixel == 1)
+            {
+                return new Image<Gray8>(width, height, PixelHelper.ToPixelArray<Gray8>(pixels));
+            }
+            else if (bytesPerPixel == 3)
             {
                 return new Image<Bgr24>(width, height, PixelHelper.ToPixelArray<Bgr24>(pixels));
             }
@@ -119,6 +124,7 @@ namespace ImageDotNet
 
             using (var pixels = PixelData.Clone(_pixels))
             {
+                // Ensure BGR ordering for images with 3 or 4 BPP.
                 if (BytesPerPixel == 3)
                 {
                     pixels.Convert<Bgr24>();
