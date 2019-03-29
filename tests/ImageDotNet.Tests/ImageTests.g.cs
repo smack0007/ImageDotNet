@@ -7,102 +7,102 @@ namespace ImageDotNet.Tests
     {
         [Fact]
         public void Is_Bgr24_Bgr24() =>
-            Assert.True(new Image<Bgr24>(1, 1, new Bgr24[1]).Is<Bgr24>());
+            Assert.True(new Image<Bgr24>(1, 1, new Bgr24[1]).IsBgr24());
 
         [Fact]
         public void Is_Bgr24_Bgra32() =>
-            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).Is<Bgra32>());
+            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).IsBgra32());
 
         [Fact]
         public void Is_Bgr24_Gray8() =>
-            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).Is<Gray8>());
+            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).IsGray8());
 
         [Fact]
         public void Is_Bgr24_Rgb24() =>
-            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).Is<Rgb24>());
+            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).IsRgb24());
 
         [Fact]
         public void Is_Bgr24_Rgba32() =>
-            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).Is<Rgba32>());
+            Assert.False(new Image<Bgr24>(1, 1, new Bgr24[1]).IsRgba32());
 
         [Fact]
         public void Is_Bgra32_Bgr24() =>
-            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).Is<Bgr24>());
+            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).IsBgr24());
 
         [Fact]
         public void Is_Bgra32_Bgra32() =>
-            Assert.True(new Image<Bgra32>(1, 1, new Bgra32[1]).Is<Bgra32>());
+            Assert.True(new Image<Bgra32>(1, 1, new Bgra32[1]).IsBgra32());
 
         [Fact]
         public void Is_Bgra32_Gray8() =>
-            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).Is<Gray8>());
+            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).IsGray8());
 
         [Fact]
         public void Is_Bgra32_Rgb24() =>
-            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).Is<Rgb24>());
+            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).IsRgb24());
 
         [Fact]
         public void Is_Bgra32_Rgba32() =>
-            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).Is<Rgba32>());
+            Assert.False(new Image<Bgra32>(1, 1, new Bgra32[1]).IsRgba32());
 
         [Fact]
         public void Is_Gray8_Bgr24() =>
-            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).Is<Bgr24>());
+            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).IsBgr24());
 
         [Fact]
         public void Is_Gray8_Bgra32() =>
-            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).Is<Bgra32>());
+            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).IsBgra32());
 
         [Fact]
         public void Is_Gray8_Gray8() =>
-            Assert.True(new Image<Gray8>(1, 1, new Gray8[1]).Is<Gray8>());
+            Assert.True(new Image<Gray8>(1, 1, new Gray8[1]).IsGray8());
 
         [Fact]
         public void Is_Gray8_Rgb24() =>
-            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).Is<Rgb24>());
+            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).IsRgb24());
 
         [Fact]
         public void Is_Gray8_Rgba32() =>
-            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).Is<Rgba32>());
+            Assert.False(new Image<Gray8>(1, 1, new Gray8[1]).IsRgba32());
 
         [Fact]
         public void Is_Rgb24_Bgr24() =>
-            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).Is<Bgr24>());
+            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).IsBgr24());
 
         [Fact]
         public void Is_Rgb24_Bgra32() =>
-            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).Is<Bgra32>());
+            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).IsBgra32());
 
         [Fact]
         public void Is_Rgb24_Gray8() =>
-            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).Is<Gray8>());
+            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).IsGray8());
 
         [Fact]
         public void Is_Rgb24_Rgb24() =>
-            Assert.True(new Image<Rgb24>(1, 1, new Rgb24[1]).Is<Rgb24>());
+            Assert.True(new Image<Rgb24>(1, 1, new Rgb24[1]).IsRgb24());
 
         [Fact]
         public void Is_Rgb24_Rgba32() =>
-            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).Is<Rgba32>());
+            Assert.False(new Image<Rgb24>(1, 1, new Rgb24[1]).IsRgba32());
 
         [Fact]
         public void Is_Rgba32_Bgr24() =>
-            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).Is<Bgr24>());
+            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).IsBgr24());
 
         [Fact]
         public void Is_Rgba32_Bgra32() =>
-            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).Is<Bgra32>());
+            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).IsBgra32());
 
         [Fact]
         public void Is_Rgba32_Gray8() =>
-            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).Is<Gray8>());
+            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).IsGray8());
 
         [Fact]
         public void Is_Rgba32_Rgb24() =>
-            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).Is<Rgb24>());
+            Assert.False(new Image<Rgba32>(1, 1, new Rgba32[1]).IsRgb24());
 
         [Fact]
         public void Is_Rgba32_Rgba32() =>
-            Assert.True(new Image<Rgba32>(1, 1, new Rgba32[1]).Is<Rgba32>());
+            Assert.True(new Image<Rgba32>(1, 1, new Rgba32[1]).IsRgba32());
     }
 }

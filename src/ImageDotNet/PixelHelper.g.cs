@@ -102,6 +102,6 @@ namespace ImageDotNet
                     ConvertRgba32ToRgb24(sourcePtr, destinationPtr, length);
                 }
             }
-        }
+        }        
     }
 }

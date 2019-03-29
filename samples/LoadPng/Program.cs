@@ -19,7 +19,7 @@ namespace LoadPng
             {
                 Console.WriteLine("{0}:", fileName);
 
-                var image = Image.LoadPng(Path.Combine(basePath, fileName)).To<Rgba32>();
+                var image = Image.LoadPng(Path.Combine(basePath, fileName)).ToRgba32();
 
                 Console.WriteLine(image.PixelType.Name);
 

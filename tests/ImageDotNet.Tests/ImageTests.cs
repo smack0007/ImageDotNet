@@ -7,7 +7,7 @@ namespace ImageDotNet.Tests
         [Fact]
         public void ForEachPixelCanModifyPixels()
         {
-            var image = new Image<Rgb24>(3, 3, TestData.Rgb24Images.Image3x3).To<Rgba32>();
+            var image = new Image<Rgb24>(3, 3, TestData.Rgb24Images.Image3x3).ToRgba32();
 
             image.ForEachPixel((ref Rgba32 x) => x.A = 255);
 
@@ -19,7 +19,7 @@ namespace ImageDotNet.Tests
         public void ToAlwaysReturnsANewImage()
         {
             var image = new Image<Rgba32>(3, 3, TestData.Rgba32Images.Image3x3);
-            var image2 = image.To<Rgba32>();
+            var image2 = image.ToRgba32();
 
             Assert.NotSame(image, image2);
         }
