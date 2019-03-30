@@ -88,21 +88,7 @@ namespace ImageDotNet
 
         public void FlipVertically(int width, int height)
         {
-            for (int y = 0; y < height / 2; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    int top = ((y * width) + x) * BytesPerPixel;
-                    int bottom = (((height - 1 - y) * width) + x) * BytesPerPixel;
-
-                    for (int i = 0; i < BytesPerPixel; i++)
-                    {
-                        byte temp = _pointer[top + i];
-                        _pointer[top + i] = _pointer[bottom + i];
-                        _pointer[bottom + i] = temp;
-                    }
-                }
-            }
+            PixelHelper.FlipVerticallyInPlace(_pointer, width, height, BytesPerPixel);
         }
     }
 }

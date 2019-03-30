@@ -5,7 +5,7 @@ namespace ImageDotNet
 {
     internal static partial class PixelHelper
     {
-        public unsafe static T[] ToPixelArray<T>(this byte[] pixels)
+        public unsafe static T[] ToPixelArray<T>(byte[] pixels)
             where T: unmanaged, IPixel
         {
             var pixelSize = Marshal.SizeOf<T>();
@@ -24,10 +24,18 @@ namespace ImageDotNet
             return buffer;
         }
 
-        public static byte[] FlipVertically(this byte[] pixels, int width, int height, int bytesPerPixel)
+        public unsafe static void FlipVerticallyInPlace(byte[] pixels, int width, int height, int bytesPerPixel)
         {
             Guard.NotNull(pixels, nameof(pixels));
 
+            fixed (byte* pixelsPtr = pixels)
+            {
+                FlipVerticallyInPlace(pixelsPtr, width, height, bytesPerPixel);
+            }
+        }
+
+        public static unsafe void FlipVerticallyInPlace(byte* pixels, int width, int height, int bytesPerPixel)
+        {
             for (int y = 0; y < height / 2; y++)
             {
                 for (int x = 0; x < width; x++)
@@ -43,11 +51,9 @@ namespace ImageDotNet
                     }
                 }
             }
-
-            return pixels;
         }
 
-        public static T[] FlipVertically<T>(this T[] pixels, int width, int height)
+        public static T[] FlipVertically<T>(T[] pixels, int width, int height)
             where T: struct, IPixel
         {
             Guard.NotNull(pixels, nameof(pixels));
@@ -68,7 +74,7 @@ namespace ImageDotNet
             return pixels;
         }
 
-        public static unsafe U[] Convert<T, U>(this T[] source)
+        public static unsafe U[] Convert<T, U>(T[] source)
             where T : unmanaged, IPixel
             where U : unmanaged, IPixel
         {

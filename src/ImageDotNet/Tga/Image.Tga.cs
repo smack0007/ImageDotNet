@@ -82,7 +82,7 @@ namespace ImageDotNet
                 }
             }
 
-            pixels = pixels.FlipVertically(width, height, bytesPerPixel);
+            PixelHelper.FlipVerticallyInPlace(pixels, width, height, bytesPerPixel);
 
             // We ensured earlier in the method that bytesPerPixel is either 1, 3 or 4.
             if (bytesPerPixel == 1)
