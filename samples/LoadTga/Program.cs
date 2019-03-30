@@ -22,7 +22,7 @@ namespace ImageDotNet.Demo
             {
                 Console.WriteLine("{0}:", fileName);
 
-                var image = Image.LoadTga(Path.Combine(basePath, fileName)).ToRgba32();
+                var image = Image.LoadTga(Path.Combine(basePath, fileName)).To<Rgba32>();
 
                 Console.WriteLine(image.PixelType.Name);
 

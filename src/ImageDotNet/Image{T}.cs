@@ -59,6 +59,18 @@ namespace ImageDotNet
             }
         }
 
+        public bool Is<U>()
+            where U : unmanaged, IPixel
+        {
+            return typeof(T) == typeof(U);
+        }
+
+        public Image<U> To<U>()
+            where U : unmanaged, IPixel
+        {
+            return new Image<U>(Width, Height, PixelHelper.Convert<T, U>(_pixels));
+        }
+
         public void FlipVertically()
         {
             _pixels = PixelHelper.FlipVertically(_pixels, Width, Height);
