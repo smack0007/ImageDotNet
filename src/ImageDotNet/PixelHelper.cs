@@ -81,6 +81,10 @@ namespace ImageDotNet
             {
                 if (typeof(T) == typeof(U))
                 {
+                    // If T and U are the same type, than create a copy of the pixels
+                    // so that the caller of the method may always assume they receive
+                    // a new byte array.
+
                     var lengthInBytes = source.Length * Marshal.SizeOf<T>();
                     Buffer.MemoryCopy(sourcePtr, destinationPtr, lengthInBytes, lengthInBytes);
                 }
