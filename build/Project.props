@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <RepositoryUrl>https://github.com/smack0007/ImageDotNet.git</RepositoryUrl>
+
+    <PackageProjectUrl>https://github.com/smack0007/ImageDotNet/</PackageProjectUrl>
+    <PackageTags></PackageTags>
+
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+</Project>

@@ -1,27 +1,28 @@
 <Project>
-    <PropertyGroup>
-        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-        <RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
-        <BinDirectory>$(RepositoryRootDirectory)bin\</BinDirectory>
-        <OutputPath>$([System.IO.Path]::GetFullPath('$(BinDirectory)$(Configuration)'))\$(MSBuildProjectName)</OutputPath>
-        <LangVersion>latest</LangVersion>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
+    <BinDirectory>$(RepositoryRootDirectory)bin\</BinDirectory>
+    <OutputPath>$([System.IO.Path]::GetFullPath('$(BinDirectory)$(Configuration)/$(PlatformTarget)'))/$(MSBuildProjectName)</OutputPath>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-        <CurrentYear>$([System.DateTime]::Now.ToString(yy))</CurrentYear>
-        <CurrentMonth>$([System.DateTime]::Now.ToString(MM))</CurrentMonth>
-        
-        <PatchNumber Condition=" $(PatchNumber) == '' ">0</PatchNumber>
-        <BuildNumber Condition=" $(BuildNumber) == '' ">0</BuildNumber>
-        <VersionPrefix>$(CurrentYear).$(CurrentMonth).$(PatchNumber)</VersionPrefix>
-        <VersionPostfix>$(BuildNumber)</VersionPostfix>
+    <Authors>smack0007</Authors>
+    <Copyright>Copyright © Zachary Snow $([System.DateTime]::Now.ToString(yyyy))</Copyright>
 
-        <Authors>smack0007</Authors>
-        <Copyright>Copyright © Zachary Snow 2018</Copyright>
+    <VersionPrefix>0.0.1</VersionPrefix>
 
-        <PackageProjectUrl>https://github.com/smack0007/ImageDotNet/</PackageProjectUrl>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/smack0007/ImageDotNet/master/License.txt</PackageLicenseUrl>
-        <PackageTags>images</PackageTags>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
 
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/smack0007/ImageDotNet.git</RepositoryUrl>
-    </PropertyGroup>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Tells Visual Studio to always run MSBuild. -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)License.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)/build/Project.props" />
+  <Import Project="$(MSBuildThisFileDirectory)/build/GitVersion.targets" />
 </Project>

@@ -38,7 +38,7 @@ namespace ImageDotNet
             if (bytesPerPixel != 1 && bytesPerPixel != 3 && bytesPerPixel != 4)
                 throw new ImageDotNetException("Only 8, 24 and 32 bit TGA images are supported.");
 
-            byte[] pixels = null;
+            byte[]? pixels = null;
             int dataLength = width * height * bytesPerPixel;
 
             if (dataType == TgaDataType.UncompressedTrueColor)

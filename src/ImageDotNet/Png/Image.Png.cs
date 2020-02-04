@@ -66,8 +66,8 @@ namespace ImageDotNet
             byte interlaceMethod = 0;
 
             int bytesPerPixel = 0;
-            byte[] pixels = null;
-            byte[] idat = null;
+            byte[]? pixels = null;
+            byte[]? idat = null;
 
             while (true)
             {
@@ -190,6 +190,9 @@ namespace ImageDotNet
                 }
             }
 
+            if (pixels == null)
+                throw new ImageDotNetException("Failed to load any pixels.");
+
             switch (bytesPerPixel)
             {
                 case 1:
@@ -260,7 +263,7 @@ namespace ImageDotNet
             var scanline = new byte[Width * BytesPerPixel + 1]; // Add in an extra byte per scanline
             scanline[0] = 0;
 
-            byte[] idat = null;
+            byte[]? idat = null;
 
             using (var pixels = PixelData.Clone(_pixels))
             {
@@ -346,7 +349,7 @@ namespace ImageDotNet
             bw.Write(chunkCrc);
         }
 
-        private static uint[] crcTable;
+        private static uint[]? crcTable = null;
 
         private static uint CalculateCrc(byte[] buffer, int offset, int length, uint crc)
         {
