@@ -163,10 +163,7 @@ namespace ImageDotNet
 
                         if (scanlineFilterAlgorithm != 0)
                         {
-                            byte a = 0;
-                            byte b = 0;
-                            byte c = 0;
-
+                            byte a, b, c;
                             for (int x = 0; x < scanline.Length; x++)
                             {
                                 switch (scanlineFilterAlgorithm)
@@ -185,7 +182,14 @@ namespace ImageDotNet
                                         break;
 
                                     case 3: // Average
-                                        throw new ImageDotNetException("Average filter algorithm in PNG not implemented.");
+                                        a = x >= bytesPerPixel ?
+                                            scanline[x - bytesPerPixel] :
+                                            previousScanline[previousScanline.Length - bytesPerPixel + (x % bytesPerPixel)];
+
+                                        b = previousScanline[x];
+
+                                        scanline[x] = (byte)(scanline[x] + ((a + b) / 2));
+                                        break;
 
                                     case 4: // Paeth
                                         a = x >= bytesPerPixel ?
@@ -199,7 +203,6 @@ namespace ImageDotNet
                                            pixelBeforePreviousScanline[x % bytesPerPixel];
 
                                         scanline[x] = (byte)(scanline[x] + (byte)PngHelper.PaethPredictor(a, b, c));
-
                                         break;
                                 }
                             }
