@@ -152,6 +152,7 @@ namespace ImageDotNet
                 int pixelsOffset = 0;
                 byte[] scanline = new byte[width * bytesPerPixel];
                 byte[] previousScanline = new byte[scanline.Length];
+                byte[] pixelBeforePreviousScanline = new byte[bytesPerPixel];
 
                 using (var deflate = new DeflateStream(chunkDataStream, CompressionMode.Decompress))
                 {
@@ -162,22 +163,44 @@ namespace ImageDotNet
 
                         if (scanlineFilterAlgorithm != 0)
                         {
+                            byte a = 0;
+                            byte b = 0;
+                            byte c = 0;
+
                             for (int x = 0; x < scanline.Length; x++)
                             {
                                 switch (scanlineFilterAlgorithm)
                                 {
                                     case 1: // Sub
-                                        throw new ImageDotNetException("Sub filter algorithm in PNG not implemented.");
+                                        a = x >= bytesPerPixel ?
+                                            scanline[x - bytesPerPixel] :
+                                            previousScanline[previousScanline.Length - bytesPerPixel + (x % bytesPerPixel)];
+
+                                        scanline[x] = (byte)(scanline[x] + a);
+                                        break;
 
                                     case 2: // Up
-                                        scanline[x] = (byte)(scanline[x] + previousScanline[x]);
+                                        b = previousScanline[x];
+                                        scanline[x] = (byte)(scanline[x] + b);
                                         break;
 
                                     case 3: // Average
                                         throw new ImageDotNetException("Average filter algorithm in PNG not implemented.");
 
                                     case 4: // Paeth
-                                        throw new ImageDotNetException("Paeth filter algorithm in PNG not implemented.");
+                                        a = x >= bytesPerPixel ?
+                                           scanline[x - bytesPerPixel] :
+                                           previousScanline[previousScanline.Length - bytesPerPixel + (x % bytesPerPixel)];
+
+                                        b = previousScanline[x];
+
+                                        c = x >= bytesPerPixel ?
+                                           previousScanline[x - bytesPerPixel] :
+                                           pixelBeforePreviousScanline[x % bytesPerPixel];
+
+                                        scanline[x] = (byte)(scanline[x] + (byte)PngHelper.PaethPredictor(a, b, c));
+
+                                        break;
                                 }
                             }
                         }
@@ -185,6 +208,7 @@ namespace ImageDotNet
                         Buffer.BlockCopy(scanline, 0, pixels, pixelsOffset, scanline.Length);
                         pixelsOffset += scanline.Length;
 
+                        Buffer.BlockCopy(previousScanline, previousScanline.Length - bytesPerPixel, pixelBeforePreviousScanline, 0, bytesPerPixel);
                         Buffer.BlockCopy(scanline, 0, previousScanline, 0, scanline.Length);
                     }
                 }

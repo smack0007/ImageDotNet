@@ -16,5 +16,17 @@ namespace ImageDotNet.Png
             IDAT,
             IEND
         }
+
+        public static int PaethPredictor(int a, int b, int c)
+        {
+            int p = a + b - c;
+            int pa = Math.Abs(p - a);
+            int pb = Math.Abs(p - b);
+            int pc = Math.Abs(p - c);
+
+            return pa <= pb && pa <= pc
+                       ? a
+                       : pb <= pc ? b : c;
+        }
     }
 }
