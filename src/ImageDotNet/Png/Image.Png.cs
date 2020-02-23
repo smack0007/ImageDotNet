@@ -115,8 +115,7 @@ namespace ImageDotNet
                         break;
 
                     case PngHelper.ChunkType.PLTE:
-
-                        break;
+                        throw new ImageDotNetException($"PNG loading not implemented for images with PLTE (palette) chunks.");
 
                     case PngHelper.ChunkType.IDAT:
                         if (idat == null)
@@ -152,7 +151,6 @@ namespace ImageDotNet
                 int pixelsOffset = 0;
                 byte[] scanline = new byte[width * bytesPerPixel];
                 byte[] previousScanline = new byte[scanline.Length];
-                byte[] pixelBeforePreviousScanline = new byte[bytesPerPixel];
 
                 using (var deflate = new DeflateStream(chunkDataStream, CompressionMode.Decompress))
                 {
@@ -169,10 +167,7 @@ namespace ImageDotNet
                                 switch (scanlineFilterAlgorithm)
                                 {
                                     case 1: // Sub
-                                        a = x >= bytesPerPixel ?
-                                            scanline[x - bytesPerPixel] :
-                                            previousScanline[previousScanline.Length - bytesPerPixel + (x % bytesPerPixel)];
-
+                                        a = x >= bytesPerPixel ? scanline[x - bytesPerPixel] : (byte)0;
                                         scanline[x] = (byte)(scanline[x] + a);
                                         break;
 
@@ -182,26 +177,15 @@ namespace ImageDotNet
                                         break;
 
                                     case 3: // Average
-                                        a = x >= bytesPerPixel ?
-                                            scanline[x - bytesPerPixel] :
-                                            previousScanline[previousScanline.Length - bytesPerPixel + (x % bytesPerPixel)];
-
+                                        a = x >= bytesPerPixel ? scanline[x - bytesPerPixel] : (byte)0;
                                         b = previousScanline[x];
-
-                                        scanline[x] = (byte)(scanline[x] + ((a + b) / 2));
+                                        scanline[x] = (byte)(scanline[x] + ((a + b) >> 1));
                                         break;
 
                                     case 4: // Paeth
-                                        a = x >= bytesPerPixel ?
-                                           scanline[x - bytesPerPixel] :
-                                           previousScanline[previousScanline.Length - bytesPerPixel + (x % bytesPerPixel)];
-
+                                        a = x >= bytesPerPixel ? scanline[x - bytesPerPixel] : (byte)0;
                                         b = previousScanline[x];
-
-                                        c = x >= bytesPerPixel ?
-                                           previousScanline[x - bytesPerPixel] :
-                                           pixelBeforePreviousScanline[x % bytesPerPixel];
-
+                                        c = x >= bytesPerPixel ? previousScanline[x - bytesPerPixel] : (byte)0;
                                         scanline[x] = (byte)(scanline[x] + (byte)PngHelper.PaethPredictor(a, b, c));
                                         break;
                                 }
@@ -211,7 +195,6 @@ namespace ImageDotNet
                         Buffer.BlockCopy(scanline, 0, pixels, pixelsOffset, scanline.Length);
                         pixelsOffset += scanline.Length;
 
-                        Buffer.BlockCopy(previousScanline, previousScanline.Length - bytesPerPixel, pixelBeforePreviousScanline, 0, bytesPerPixel);
                         Buffer.BlockCopy(scanline, 0, previousScanline, 0, scanline.Length);
                     }
                 }
