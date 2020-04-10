@@ -293,7 +293,7 @@ namespace ImageDotNet
                     ms.WriteByte(24);
                     ms.WriteByte(87);
 
-                    using (var deflate = new DeflateStream(ms, CompressionLevel.Fastest))
+                    using (var deflate = new DeflateStream(ms, CompressionLevel.Optimal))
                     {
                         for (int y = 0; y < Height; y++)
                         {
