@@ -28,19 +28,33 @@ namespace ImageDotNet
                 (endianess == Endianess.Little && !BitConverter.IsLittleEndian))
             {
                 bytes = bytes.Reverse().ToArray();
-            }
+            }            
 
             return bytes;
         }
 
-        public static uint ReadBigEndianUInt32(byte[] data, int offset)
+        public static uint ReadBigEndianUInt32(byte[] buffer, int offset)
         {
-            return (uint)(data[offset] << 24) | (uint)(data[offset + 1] << 16) | (uint)(data[offset + 2] << 8) | data[offset + 3];
+            var bytes = buffer.Skip(offset).Take(4).ToArray();
+
+            if (BitConverter.IsLittleEndian)
+            {
+                bytes = bytes.Reverse().ToArray();
+            }
+
+            return BitConverter.ToUInt32(bytes, 0);
         }
 
-        public static ushort ReadLittleEndianUInt16(byte[] bytes, int offset)
+        public static ushort ReadLittleEndianUInt16(byte[] buffer, int offset)
         {
-            return (ushort)((bytes[offset + 1] << 8) | bytes[offset]);
+            var bytes = buffer.Skip(offset).Take(2).ToArray();
+
+            if (!BitConverter.IsLittleEndian)
+            {
+                bytes = bytes.Reverse().ToArray();
+            }
+
+            return BitConverter.ToUInt16(bytes, 0);
         }
 
         public static void WriteBigEndianUInt32(byte[] buffer, int offset, uint value)
