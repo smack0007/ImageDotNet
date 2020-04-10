@@ -22,6 +22,8 @@ namespace ImageDotNet
 
         Image<T> To<T>() where T : unmanaged, IPixel;
 
+        T[] ToPixelArray<T>() where T : unmanaged, IPixel;
+
         void FlipVertically();
     }
 }

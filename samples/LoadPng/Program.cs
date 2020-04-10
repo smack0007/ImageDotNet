@@ -29,7 +29,9 @@ namespace LoadPng
             }
 
             var image2 = Image.LoadPng(Path.Combine(basePath, fileNames[0]));
-            image2.SavePng(Path.Combine(basePath, "output.png"));
+
+            var image3 = new Image<Rgba32>(image2.Width, image2.Height, image2.ToPixelArray<Rgba32>());
+            image3.SavePng(Path.Combine(basePath, "output.png"));
         }
     }
 }

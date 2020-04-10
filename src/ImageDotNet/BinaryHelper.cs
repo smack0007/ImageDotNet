@@ -1,7 +1,38 @@
+using System;
+using System.Linq;
+
 namespace ImageDotNet
 {
     internal static class BinaryHelper
     {
+        enum Endianess { Big, Little };
+
+        private static byte[] GetBytes(Endianess endianess, ushort value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+
+            if ((endianess == Endianess.Big && BitConverter.IsLittleEndian) ||
+                (endianess == Endianess.Little && !BitConverter.IsLittleEndian))
+            {
+                bytes = bytes.Reverse().ToArray();
+            }
+
+            return bytes;
+        }
+
+        private static byte[] GetBytes(Endianess endianess, uint value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+
+            if ((endianess == Endianess.Big && BitConverter.IsLittleEndian) ||
+                (endianess == Endianess.Little && !BitConverter.IsLittleEndian))
+            {
+                bytes = bytes.Reverse().ToArray();
+            }
+
+            return bytes;
+        }
+
         public static uint ReadBigEndianUInt32(byte[] data, int offset)
         {
             return (uint)(data[offset] << 24) | (uint)(data[offset + 1] << 16) | (uint)(data[offset + 2] << 8) | data[offset + 3];
@@ -14,16 +45,20 @@ namespace ImageDotNet
 
         public static void WriteBigEndianUInt32(byte[] buffer, int offset, uint value)
         {
-            buffer[offset] = (byte)(value & (0xFF << 24));
-            buffer[offset + 1] = (byte)(value & (0xFF << 16));
-            buffer[offset + 2] = (byte)(value & (0xFF << 8));
-            buffer[offset + 3] = (byte)(value & (0xFF));
+            var bytes = GetBytes(Endianess.Big, value);
+
+            buffer[offset] = bytes[0];
+            buffer[offset + 1] = bytes[1];
+            buffer[offset + 2] = bytes[2];
+            buffer[offset + 3] = bytes[3];
         }
 
-        public static void WriteLittleEndianUInt16(byte[] bytes, int offset, ushort value)
+        public static void WriteLittleEndianUInt16(byte[] buffer, int offset, ushort value)
         {
-            bytes[offset] = (byte)(value & 0x00FF);
-            bytes[offset + 1] = (byte)(value >> 8);
+            var bytes = GetBytes(Endianess.Little, value);
+
+            buffer[offset] = bytes[0];
+            buffer[offset + 1] = bytes[1];
         }
     }
 }

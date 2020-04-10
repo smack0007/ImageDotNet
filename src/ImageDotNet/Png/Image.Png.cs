@@ -270,8 +270,7 @@ namespace ImageDotNet
             ihdr[12] = 0; // interlaceMethod
             WriteChunk(bw, "IHDR", ihdr);
 
-            var scanline = new byte[Width * BytesPerPixel + 1]; // Add in an extra byte per scanline
-            scanline[0] = 0;
+            var scanline = new byte[Width * BytesPerPixel]; // Add in an extra byte per scanline
 
             byte[]? idat = null;
 
@@ -294,22 +293,23 @@ namespace ImageDotNet
                     ms.WriteByte(24);
                     ms.WriteByte(87);
 
-                    using (var deflate = new DeflateStream(ms, CompressionLevel.Optimal))
+                    using (var deflate = new DeflateStream(ms, CompressionLevel.Fastest))
                     {
                         for (int y = 0; y < Height; y++)
                         {
+                            deflate.WriteByte(0);
+
                             for (int x = 0; x < Width; x++)
                             {
                                 for (int i = 0; i < BytesPerPixel; i++)
-                                    scanline[(x * BytesPerPixel) + i + 1] = pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
+                                    scanline[(x * BytesPerPixel) + i] = pixels[(y * Width * BytesPerPixel) + (x * BytesPerPixel) + i];
                             }
 
                             deflate.Write(scanline, 0, scanline.Length);
                         }
-
-                        deflate.Flush();
-                        idat = ms.ToArray();
                     }
+
+                    idat = ms.ToArray();
                 }
             }
 

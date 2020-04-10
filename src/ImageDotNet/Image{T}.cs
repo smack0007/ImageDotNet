@@ -33,7 +33,7 @@ namespace ImageDotNet
             if (_pixels.Length != Width * Height)
                 throw new ImageDotNetException($"The format of the pixels is incorrect. The length of the pixels array should be {Width * Height} but was {_pixels.Length}");
         }
-        
+
         public ImageDataPointer GetDataPointer()
         {
             var handle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
@@ -69,6 +69,12 @@ namespace ImageDotNet
             where U : unmanaged, IPixel
         {
             return new Image<U>(Width, Height, PixelHelper.Convert<T, U>(_pixels));
+        }
+
+        public U[] ToPixelArray<U>()
+            where U : unmanaged, IPixel
+        {
+            return PixelHelper.Convert<T, U>(_pixels);
         }
 
         public void FlipVertically()
